@@ -1,0 +1,35 @@
+#pragma once
+#include "client.h"
+#include "player.h"
+#include "bullet.h"
+#include "includes.h"
+#include <thread>
+#include <mutex>
+#include <atomic>
+class Server
+{
+private:
+
+	std::mutex mutex;
+	std::mutex TcpMutex;
+	std::atomic<bool> endFlag=0;
+	bool connectingFlag = 0;
+	unsigned int serverUdpPort;
+
+	std::vector<std::shared_ptr<Client>> clients;
+	std::vector<std::shared_ptr<Player>> players;
+	std::vector<std::shared_ptr<Bullet>> bullets;
+	sf::UdpSocket inUdpSocket;
+	sf::TcpSocket inTcpSocket;
+
+public:
+	void sendTcpToEveryone(sf::Packet&);
+	void sendUdpToEveryone(sf::Packet&);
+	void acceptTcpMessage();
+	void acceptUdpMessage();
+	void doStuff();
+	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
+	Server();
+	~Server();
+};
+

@@ -165,6 +165,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="physical.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="server.h" />
     <ClInclude Include="ship.h" />
     <ClInclude Include="turret.h" />
   </ItemGroup>
@@ -182,6 +183,7 @@
     <ClCompile Include="physical.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Scharnhorst_server.cpp" />
+    <ClCompile Include="server.cpp" />
     <ClCompile Include="ship.cpp" />
     <ClCompile Include="turret.cpp" />
   </ItemGroup>

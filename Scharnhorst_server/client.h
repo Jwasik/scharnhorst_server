@@ -12,8 +12,8 @@ public:
 	Client();
 	~Client();
 	sf::TcpSocket& getTcpSocket();
-	sf::TcpSocket::Status sendTcp( sf::Packet&);
-	sf::TcpSocket::Status sendUdp( sf::Packet&);
+	sf::TcpSocket::Status sendTcp( sf::Packet);
+	sf::TcpSocket::Status sendUdp( sf::Packet);
 	sf::TcpSocket::Status receiveTcp( sf::Packet&);
 
 	sf::IpAddress getRemoteAddress();

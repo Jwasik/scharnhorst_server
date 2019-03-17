@@ -1,2 +1,5 @@
 ﻿  Scharnhorst_server.cpp
+  bullet.cpp
+  server.cpp
+  Generating Code...
   Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

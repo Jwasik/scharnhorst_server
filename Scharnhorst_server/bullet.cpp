@@ -2,11 +2,22 @@
 #include "bullet.h"
 
 
-bullet::bullet()
+void Bullet::loadBulletType(std::string)
 {
 }
 
+Bullet::Bullet()
+{
+}
 
-bullet::~bullet()
+Bullet::Bullet(sf::Vector2f position, float angle, std::string type = "NULL_BULLET")
+{
+	this->setPosition(position);
+	this->setRotation(angle);
+	this->loadBulletType(type);
+}
+
+
+Bullet::~Bullet()
 {
 }

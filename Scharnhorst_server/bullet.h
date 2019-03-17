@@ -1,7 +1,7 @@
 #pragma once
 #include "includes.h"
 #include "movable.h"
-class bullet : public movable
+class Bullet : public movable
 {
 protected:
 	std::string type;
@@ -10,8 +10,11 @@ protected:
 	float damage;
 	float angle;
 
+	void loadBulletType(std::string);
+
 public:
-	bullet();
-	~bullet();
+	Bullet();
+	Bullet(sf::Vector2f, float, std::string);
+	~Bullet();
 };
 

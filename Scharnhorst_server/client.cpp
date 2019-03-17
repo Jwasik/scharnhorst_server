@@ -17,15 +17,14 @@ sf::TcpSocket & Client::getTcpSocket()
 	return this->orderSocket;
 }
 
-sf::TcpSocket::Status Client::sendTcp(sf::Packet &packet)
+sf::TcpSocket::Status Client::sendTcp(sf::Packet packet)
 {
 	return orderSocket.send(packet);
 }
-sf::TcpSocket::Status Client::sendUdp(sf::Packet &packet)
+sf::TcpSocket::Status Client::sendUdp(sf::Packet packet)
 {
-	if(UdpPort != 0)return orderSocket.send(packet);
+	if(UdpPort != 0)return outSocket.send(packet,orderSocket.getRemoteAddress(),UdpPort);
 	else return sf::TcpSocket::Status::Error;
-	
 }
 
 sf::TcpSocket::Status Client::receiveTcp(sf::Packet &packet)
