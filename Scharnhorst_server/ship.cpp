@@ -152,6 +152,15 @@ void Ship::draw(sf::RenderWindow &window)
 	window.draw(this->shape);
 }
 
+void Ship::setCannonRotation(float angle)
+{
+}
+
+float Ship::getCannonRotation()//do zrobienia
+{
+	return 0;
+}
+
 void Ship::swim(double deltaTime)
 {
 	this->accelerate(deltaTime);

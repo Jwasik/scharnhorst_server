@@ -1,5 +1,3 @@
-﻿  Scharnhorst_server.cpp
-  bullet.cpp
-  server.cpp
-  Generating Code...
+﻿  server.cpp
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(233): warning C4390: ';': empty controlled statement found; is this the intent?
   Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

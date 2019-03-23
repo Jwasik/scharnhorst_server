@@ -14,7 +14,7 @@ private:
 	std::mutex TcpMutex;
 	std::atomic<bool> endFlag=0;
 	bool connectingFlag = 0;
-	unsigned int serverUdpPort;
+	unsigned short serverUdpPort;
 
 	std::vector<std::shared_ptr<Client>> clients;
 	std::vector<std::shared_ptr<Player>> players;
@@ -22,9 +22,12 @@ private:
 	sf::UdpSocket inUdpSocket;
 	sf::TcpSocket inTcpSocket;
 
+	std::shared_ptr<Player> getPlayerById(unsigned int);
+
 public:
+	void sendingEvent(); //Funkcja obs³uguj¹ca wysy³anie, jako sta³y element gry
 	void sendTcpToEveryone(sf::Packet&);
-	void sendUdpToEveryone(sf::Packet&);
+	void sendUdpToEveryone(sf::Packet);
 	void acceptTcpMessage();
 	void acceptUdpMessage();
 	void doStuff();

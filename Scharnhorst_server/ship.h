@@ -33,6 +33,8 @@ public:
 	void spin(bool, double); // natychmiastowy obrót o akkcelerancjê kontow¹ w czasie
 	void changeGear(bool); // zmana biegu 0 dla -- 1 dla ++
 	void draw(sf::RenderWindow&);
+	void setCannonRotation(float);
+	float getCannonRotation();
 
 	std::string getType();
 	Ship();

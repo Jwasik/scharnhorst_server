@@ -34,6 +34,18 @@ void Player::draw(sf::RenderWindow &window)
 	this->playerShip->draw(window);
 }
 
+sf::Packet Player::preparePOSpacket()
+{
+	sf::Packet sendingPacket;
+	sendingPacket.clear();
+	sendingPacket << this->playerId;
+	sendingPacket << this->getShip()->getPosition().x;
+	sendingPacket << this->getShip()->getPosition().y;
+	sendingPacket << this->getShip()->getRotation();
+	sendingPacket << this->getShip()->getCannonRotation();
+	return sendingPacket;
+}
+
 std::shared_ptr<Ship> & Player::getShip()
 {
 	return this->playerShip;
@@ -44,12 +56,11 @@ Player::Player()
 	playerShip = std::make_shared<Ship>();
 }
 
-Player::Player(std::string playerName, sf::TcpSocket &socket)
+Player::Player(unsigned int id,std::string playerName)
 {
 	playerShip = std::make_shared<Ship>();
+	this->playerId = id;
 	this->playerName = playerName;
-	sf::Packet packet;
-	packet << "PLA" << 0 << playerName << this->getShip()->getType();
 }
 
 

@@ -11,6 +11,26 @@ Server::~Server()
 }
 
 
+std::shared_ptr<Player> Server::getPlayerById(unsigned int id)
+{
+	for (const auto & player : players)
+	{
+		if (player->getPlayerId() == id)
+		{
+			return player;
+		}
+	}
+	return nullptr;
+}
+
+void Server::sendingEvent()
+{
+	for (auto & player : this->players)
+	{
+		sendUdpToEveryone(player->preparePOSpacket());
+	}
+}
+
 void Server::sendTcpToEveryone(sf::Packet &packet)
 {
 	for (auto & client : clients)
@@ -19,7 +39,7 @@ void Server::sendTcpToEveryone(sf::Packet &packet)
 	}
 }
 
-void Server::sendUdpToEveryone(sf::Packet &packet)
+void Server::sendUdpToEveryone(sf::Packet packet)
 {
 	for (auto & client : clients)
 	{
@@ -61,6 +81,59 @@ void Server::acceptTcpMessage()
 
 void Server::acceptUdpMessage()
 {
+	sf::Packet messagePacket;
+	sf::Clock connectionClock;
+	connectionClock.restart();
+	std::string message = "";
+	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
+	{
+		inTcpSocket.receive(messagePacket);
+		if (messagePacket >> message)
+		{
+			if (message == "POS")
+			{
+				unsigned int id;
+				sf::Vector2f position;
+				float angle;
+				float cannonAngle;
+				messagePacket >> id;
+				messagePacket >> position.x;
+				messagePacket >> position.y;
+				messagePacket >> angle;
+				messagePacket >> cannonAngle;
+
+				auto player = this->getPlayerById(id);
+				if (player == nullptr)continue;
+				player->getShip()->setPosition(position);
+				player->getShip()->setRotation(angle);
+				player->getShip()->setCannonRotation(cannonAngle);
+			}
+			if (message == "PPS")
+			{
+				unsigned int count=0;
+				unsigned int id;
+				sf::Vector2f position;
+				float angle;
+				float cannonAngle;
+				messagePacket >> count;
+				for (unsigned int i = 0; i < count; i++)
+				{
+					messagePacket >> id;
+					messagePacket >> position.x;
+					messagePacket >> position.y;
+					messagePacket >> angle;
+					messagePacket >> cannonAngle;
+
+					auto player = this->getPlayerById(id);
+					if (player == nullptr)continue;
+					player->getShip()->setPosition(position);
+					player->getShip()->setRotation(angle);
+					player->getShip()->setCannonRotation(cannonAngle);
+				}
+			}
+		}
+		messagePacket.clear();
+	}
 }
 
 void Server::doStuff()
@@ -133,10 +206,57 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						}
 					}
 				}
+				helloPacket.clear();
+				
 			}
 			helloPacket.clear();
 			helloPacket << "HI_" << serverUdpPort;
+			std::cout << "sending HI_ : " << serverUdpPort << std::endl;
 			connectingClient->sendTcp(helloPacket);
+
+			while (connectionClock.getElapsedTime().asSeconds() < 2)
+			{
+				if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
+				{
+					helloPacket >> message;
+					if (message == "PLA")
+					{
+						unsigned int newPlayerId;
+						std::string newPlayerName, playerShipModel;
+						helloPacket >> newPlayerId;
+						helloPacket >> newPlayerName;
+						helloPacket >> playerShipModel;
+						if (newPlayerId == 0)
+						{
+							for (unsigned int i = 1; i < 10000; i++)//Przydziela nowe ID
+							{
+								if (this->getPlayerById(i) == nullptr);
+								{
+									newPlayerId = i;
+									break;
+								}
+							}
+						}
+						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
+						helloPacket.clear();
+
+						helloPacket << "PLJ";
+						helloPacket << newPlayerId;
+						helloPacket << newPlayerName;
+						helloPacket << float(120);//pozycja statku
+						helloPacket << float(120);
+						helloPacket << float(0);//obrót statku
+
+						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
+
+						connectingClient->sendTcp(helloPacket);
+						helloPacket.clear();
+
+						std::lock_guard<std::mutex> lock(this->mutex);
+						players.push_back(newPlayer);
+					}
+				}
+			}
 
 			connectingClient->setBlocking(false);
 
