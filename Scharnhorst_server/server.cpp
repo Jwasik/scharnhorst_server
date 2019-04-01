@@ -236,13 +236,13 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 						helloPacket << "PLJ";
 						helloPacket << newPlayerId;
-						helloPacket << newPlayerName;
-						helloPacket << float(120);//pozycja statku
-						helloPacket << float(120);
+						helloPacket << newPlayerName; 
+						helloPacket << float(120);//pozycja statku x
+						helloPacket << float(120);//pozycja statku y
 						helloPacket << float(0);//obrót statku
 
 						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
-
+						std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;
 						connectingClient->sendTcp(helloPacket);
 						
 						helloPacket.clear();
