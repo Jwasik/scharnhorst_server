@@ -172,7 +172,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 	while (endFlag == 0)
 	{
-
+		std::cout << "waiting for incoming connections" << std::endl;
 		std::shared_ptr<Client> connectingClient = std::make_shared<Client>();
 		if (listener.accept((*connectingClient).getTcpSocket()) != sf::Socket::Done)
 		{
@@ -181,6 +181,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 		}
 		else
 		{
+			std::cout << "client accepted" << std::endl;
 			sf::Clock connectionClock;
 			connectionClock.restart();
 			sf::Packet helloPacket;
@@ -228,14 +229,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						helloPacket >> playerShipModel;
 						if (newPlayerId == 0)
 						{
-							for (unsigned int i = 1; i < 10000; i++)//Przydziela nowe ID
-							{
-								if (this->getPlayerById(i) == nullptr);
-								{
-									newPlayerId = i;
-									break;
-								}
-							}
+							newPlayerId = players.size()+1;
 						}
 						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
 						helloPacket.clear();
@@ -250,20 +244,22 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
 
 						connectingClient->sendTcp(helloPacket);
+						
 						helloPacket.clear();
 
 						std::lock_guard<std::mutex> lock(this->mutex);
 						players.push_back(newPlayer);
+						break;
 					}
 				}
 			}
-
 			connectingClient->setBlocking(false);
 
 			{
 				std::lock_guard<std::mutex> lock(this->mutex);
 				clients.push_back(connectingClient);
 			}
+			
 		}
 
 	}
