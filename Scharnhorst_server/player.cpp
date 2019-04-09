@@ -34,10 +34,11 @@ void Player::draw(sf::RenderWindow &window)
 	this->playerShip->draw(window);
 }
 
-sf::Packet Player::preparePOSpacket()
+sf::Packet& Player::preparePOSpacket()
 {
 	sf::Packet sendingPacket;
 	sendingPacket.clear();
+	sendingPacket << "POS";
 	sendingPacket << this->playerId;
 	sendingPacket << this->getShip()->getPosition().x;
 	sendingPacket << this->getShip()->getPosition().y;

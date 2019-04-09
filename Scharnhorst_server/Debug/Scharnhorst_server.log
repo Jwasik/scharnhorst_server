@@ -1,14 +1,2 @@
-﻿  ship.cpp
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(57): warning C4244: "-=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(61): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(66): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(129): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(131): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(132): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(167): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(168): warning C4244: "argument": konwersja z "double" do "T", możliwa utrata danych
-          with
-          [
-              T=float
-          ]
-  Scharnhorst_server.vcxproj -> C:\Users\Maciej\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe
+﻿  server.cpp
+  Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

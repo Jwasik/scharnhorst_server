@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "server.h"
+#include <windows.h>
 
 Server::Server()
 {
@@ -47,7 +48,7 @@ void Server::sendUdpToEveryone(sf::Packet packet)
 	}
 }
 
-void Server::acceptTcpMessage()
+void Server::acceptTcpMessages()
 {
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
@@ -79,17 +80,19 @@ void Server::acceptTcpMessage()
 	}
 }
 
-void Server::acceptUdpMessage()
+void Server::acceptUdpMessages(unsigned short port)
 {
+	std::cout << "checking for messages" << std::endl;
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
 	connectionClock.restart();
 	std::string message = "";
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
-		inTcpSocket.receive(messagePacket);
+		inUdpSocket.receive(messagePacket,this->localIP,port);//UWAGA .receive() zeruje wartoœæ portu, przekazujemy go przez wartoœæ
 		if (messagePacket >> message)
 		{
+			std::cout << "got message" << std::endl;
 			if (message == "POS")
 			{
 				unsigned int id;
@@ -102,6 +105,7 @@ void Server::acceptUdpMessage()
 				messagePacket >> angle;
 				messagePacket >> cannonAngle;
 
+				std::cout<<"received POS "<<id<< ' ' << position.x << ' ' << position.y << ' ' << angle << ' ' << cannonAngle << std::endl;
 				auto player = this->getPlayerById(id);
 				if (player == nullptr)continue;
 				player->getShip()->setPosition(position);
@@ -152,10 +156,11 @@ void Server::doStuff()
 
 	std::cout << "TCP working on " << IP << ':' << "8888" << std::endl;
 	std::cout << "UDP working on " << IP << ':' << this->serverUdpPort << std::endl;
+	//MAIN LOOP
 	while (1)
 	{
-		//sending
-
+		sendingEvent();
+		acceptUdpMessages(serverUdpPort);
 	}
 	this->endFlag = 1;
 	listening.join();
@@ -263,4 +268,17 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 		}
 
 	}
+}
+
+void Server::printPOSPacket(sf::Packet packet)
+{
+	std::cout << packet.getDataSize() << ' ';
+	std::string type = "ERR";
+	unsigned int id=0;
+	float x, y, angle,cannonAngle;
+	x = y = angle = cannonAngle = 420;
+	packet >> type;
+	packet >> id;
+	packet >> x, y, angle, cannonAngle;
+	std::cout << "packet " << type << ' ' << id << ' ' << x << ' ' << y << ' ' << angle << ' ' << cannonAngle << std::endl;
 }
