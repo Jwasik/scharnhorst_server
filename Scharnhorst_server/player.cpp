@@ -68,3 +68,9 @@ Player::Player(unsigned int id,std::string playerName)
 Player::~Player()
 {
 }
+
+void Player::printPosition()
+{
+	system("cls");
+	std::cout << "Player " << this->playerName << " position " << this->getShip()->getPosition().x << ' ' << this->playerName << " position " << this->getShip()->getPosition().y << std::endl;
+}

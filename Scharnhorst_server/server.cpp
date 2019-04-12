@@ -34,6 +34,7 @@ void Server::sendingEvent()
 
 void Server::sendTcpToEveryone(sf::Packet &packet)
 {
+	std::lock_guard<std::mutex> lock(this->TcpMutex);
 	for (auto & client : clients)
 	{
 		client->sendTcp(packet);
@@ -80,48 +81,32 @@ void Server::acceptTcpMessages()
 	}
 }
 
-void Server::acceptUdpMessages(unsigned short port)
+void Server::acceptUdpMessages()
 {
-	std::cout << "checking for messages" << std::endl;
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
+	sf::IpAddress add(sf::IpAddress::None);
+	unsigned short port = 0;
 	connectionClock.restart();
 	std::string message = "";
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
-		inUdpSocket.receive(messagePacket,this->localIP,port);//UWAGA .receive() zeruje wartoœæ portu, przekazujemy go przez wartoœæ
-		if (messagePacket >> message)
+		for (auto & client : clients)
 		{
-			std::cout << "got message" << std::endl;
-			if (message == "POS")
-			{
-				unsigned int id;
-				sf::Vector2f position;
-				float angle;
-				float cannonAngle;
-				messagePacket >> id;
-				messagePacket >> position.x;
-				messagePacket >> position.y;
-				messagePacket >> angle;
-				messagePacket >> cannonAngle;
+			std::cout << std::endl;
+		
+			//Odbieranie UDP
+			this->inUdpSocket.receive(messagePacket,add,port);
 
-				std::cout<<"received POS "<<id<< ' ' << position.x << ' ' << position.y << ' ' << angle << ' ' << cannonAngle << std::endl;
-				auto player = this->getPlayerById(id);
-				if (player == nullptr)continue;
-				player->getShip()->setPosition(position);
-				player->getShip()->setRotation(angle);
-				player->getShip()->setCannonRotation(cannonAngle);
-			}
-			if (message == "PPS")
+
+			if (messagePacket >> message)
 			{
-				unsigned int count=0;
-				unsigned int id;
-				sf::Vector2f position;
-				float angle;
-				float cannonAngle;
-				messagePacket >> count;
-				for (unsigned int i = 0; i < count; i++)
+				if (message == "POS")
 				{
+					unsigned int id;
+					sf::Vector2f position;
+					float angle;
+					float cannonAngle;
 					messagePacket >> id;
 					messagePacket >> position.x;
 					messagePacket >> position.y;
@@ -133,10 +118,34 @@ void Server::acceptUdpMessages(unsigned short port)
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
 					player->getShip()->setCannonRotation(cannonAngle);
+
+				}
+				if (message == "PPS")
+				{
+					unsigned int count = 0;
+					unsigned int id;
+					sf::Vector2f position;
+					float angle;
+					float cannonAngle;
+					messagePacket >> count;
+					for (unsigned int i = 0; i < count; i++)
+					{
+						messagePacket >> id;
+						messagePacket >> position.x;
+						messagePacket >> position.y;
+						messagePacket >> angle;
+						messagePacket >> cannonAngle;
+
+						auto player = this->getPlayerById(id);
+						if (player == nullptr)continue;
+						player->getShip()->setPosition(position);
+						player->getShip()->setRotation(angle);
+						player->getShip()->setCannonRotation(cannonAngle);
+					}
 				}
 			}
+			messagePacket.clear();
 		}
-		messagePacket.clear();
 	}
 }
 
@@ -155,12 +164,12 @@ void Server::doStuff()
 	
 
 	std::cout << "TCP working on " << IP << ':' << "8888" << std::endl;
-	std::cout << "UDP working on " << IP << ':' << this->serverUdpPort << std::endl;
+	std::cout << "UDP working on " << IP << ':' << this->inUdpSocket.getLocalPort() << std::endl;
 	//MAIN LOOP
 	while (1)
 	{
 		sendingEvent();
-		acceptUdpMessages(serverUdpPort);
+		acceptUdpMessages();
 	}
 	this->endFlag = 1;
 	listening.join();
@@ -186,6 +195,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 		}
 		else
 		{
+			std::lock_guard<std::mutex> lock(this->TcpMutex);
 			std::cout << "client accepted" << std::endl;
 			sf::Clock connectionClock;
 			connectionClock.restart();
@@ -194,8 +204,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 			unsigned short clientUdpPort;
 			std::string message;
-			{
-				std::lock_guard<std::mutex> lock(this->TcpMutex);
+				
 				while (connectionClock.getElapsedTime().asSeconds() < 2)
 				{
 	
@@ -214,7 +223,6 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 				}
 				helloPacket.clear();
 				
-			}
 			helloPacket.clear();
 			helloPacket << "HI_" << serverUdpPort;
 			std::cout << "sending HI_ : " << serverUdpPort << std::endl;
@@ -252,8 +260,23 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						
 						helloPacket.clear();
 
-						std::lock_guard<std::mutex> lock(this->mutex);
-						players.push_back(newPlayer);
+						{
+							std::lock_guard<std::mutex> lock(this->mutex);
+							players.push_back(newPlayer);
+						}
+
+						sf::Packet PLApacket;
+						PLApacket.clear();
+						PLApacket << "PLA";
+						PLApacket << newPlayerId;
+						PLApacket << newPlayerName;
+						PLApacket << playerShipModel;
+						
+						for (auto & client : clients)
+						{
+							client->sendTcp(PLApacket);
+						}
+
 						break;
 					}
 				}

@@ -4,7 +4,7 @@
 
 Client::Client()
 {
-	this->UdpPort = 0;
+	this->clientUdpPort = 0;
 }
 
 
@@ -17,17 +17,17 @@ sf::TcpSocket & Client::getTcpSocket()
 	return this->orderSocket;
 }
 
-sf::TcpSocket::Status Client::sendTcp(sf::Packet packet)
+sf::Socket::Status Client::sendTcp(sf::Packet packet)
 {
 	return orderSocket.send(packet);
 }
-sf::TcpSocket::Status Client::sendUdp(sf::Packet packet)
+sf::Socket::Status Client::sendUdp(sf::Packet packet)
 {
-	if(UdpPort != 0)return outSocket.send(packet,orderSocket.getRemoteAddress(),UdpPort);
+	if(clientUdpPort != 0)return outSocket.send(packet,orderSocket.getRemoteAddress(),clientUdpPort);
 	else return sf::TcpSocket::Status::Error;
 }
 
-sf::TcpSocket::Status Client::receiveTcp(sf::Packet &packet)
+sf::Socket::Status Client::receiveTcp(sf::Packet &packet)
 {
 	return orderSocket.receive(packet);
 }
@@ -39,7 +39,7 @@ sf::IpAddress Client::getRemoteAddress()
 
 unsigned int Client::getOutUdpPort()
 {
-	return this->UdpPort;
+	return this->clientUdpPort;
 }
 
 void Client::setBlocking(bool status)
@@ -49,5 +49,6 @@ void Client::setBlocking(bool status)
 
 void Client::setOutUdpPort(unsigned int port)
 {
-	this->UdpPort = port;
+	this->clientAddress = orderSocket.getRemoteAddress();
+	this->clientUdpPort = port;
 }

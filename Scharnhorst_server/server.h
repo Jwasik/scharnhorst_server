@@ -30,7 +30,7 @@ public:
 	void sendTcpToEveryone(sf::Packet&);
 	void sendUdpToEveryone(sf::Packet);
 	void acceptTcpMessages();
-	void acceptUdpMessages(unsigned short);
+	void acceptUdpMessages();
 	void doStuff();
 	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
 	void printPOSPacket(sf::Packet);

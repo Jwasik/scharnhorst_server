@@ -5,7 +5,8 @@
 class Client
 {
 private:
-	unsigned int UdpPort;
+	unsigned short clientUdpPort;
+	sf::IpAddress clientAddress;
 	sf::TcpSocket orderSocket;
 	sf::UdpSocket outSocket;
 public:

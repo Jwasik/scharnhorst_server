@@ -22,5 +22,7 @@ public:
 	Player();
 	Player(unsigned int,std::string);
 	~Player();
+
+	void printPosition();
 };
 
