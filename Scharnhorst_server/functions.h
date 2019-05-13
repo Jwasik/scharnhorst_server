@@ -8,6 +8,8 @@ namespace jw
 
 	//Wypisuje na ekran podany sf::status
 	void printStatus(const sf::Socket::Status&);
+	void printPOSPacket(sf::Packet);
+
 }
 
 

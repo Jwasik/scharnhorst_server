@@ -34,7 +34,7 @@ void Player::draw(sf::RenderWindow &window)
 	this->playerShip->draw(window);
 }
 
-sf::Packet& Player::preparePOSpacket()
+sf::Packet Player::preparePOSpacket()
 {
 	sf::Packet sendingPacket;
 	sendingPacket.clear();
@@ -44,6 +44,7 @@ sf::Packet& Player::preparePOSpacket()
 	sendingPacket << this->getShip()->getPosition().y;
 	sendingPacket << this->getShip()->getRotation();
 	sendingPacket << this->getShip()->getCannonRotation();
+
 	return sendingPacket;
 }
 
@@ -71,6 +72,5 @@ Player::~Player()
 
 void Player::printPosition()
 {
-	system("cls");
-	std::cout << "Player " << this->playerName << " position " << this->getShip()->getPosition().x << ' ' << this->playerName << " position " << this->getShip()->getPosition().y << std::endl;
+	std::cout << "Player " << this->playerName << " position " << this->getShip()->getPosition().x << ' ' <<  this->getShip()->getPosition().y << std::endl;
 }

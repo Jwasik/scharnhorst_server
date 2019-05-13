@@ -45,7 +45,7 @@ void Server::sendUdpToEveryone(sf::Packet packet)
 {
 	for (auto & client : clients)
 	{
-		client->sendTcp(packet);
+		client->sendUdp(packet);
 	}
 }
 
@@ -92,17 +92,15 @@ void Server::acceptUdpMessages()
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
 		for (auto & client : clients)
-		{
-			std::cout << std::endl;
-		
+		{		
 			//Odbieranie UDP
 			this->inUdpSocket.receive(messagePacket,add,port);
-
 
 			if (messagePacket >> message)
 			{
 				if (message == "POS")
 				{
+					
 					unsigned int id;
 					sf::Vector2f position;
 					float angle;
@@ -118,7 +116,6 @@ void Server::acceptUdpMessages()
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
 					player->getShip()->setCannonRotation(cannonAngle);
-
 				}
 				if (message == "PPS")
 				{
@@ -170,6 +167,11 @@ void Server::doStuff()
 	{
 		sendingEvent();
 		acceptUdpMessages();
+
+		/*for (auto player : players)
+		{
+			player->printPosition();
+		}*/
 	}
 	this->endFlag = 1;
 	listening.join();

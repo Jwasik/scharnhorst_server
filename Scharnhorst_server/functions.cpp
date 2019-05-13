@@ -29,3 +29,16 @@ void jw::printStatus(const sf::Socket::Status &status)
 
 	}
 }
+
+void jw::printPOSPacket(sf::Packet packet)
+{
+	std::cout << packet.getDataSize() << ' ';
+	std::string type = "ERR";
+	unsigned int id = 0;
+	float x, y, angle, cannonAngle;
+	x = y = angle = cannonAngle = 420;
+	packet >> type;
+	packet >> id;
+	packet >> x, y, angle, cannonAngle;
+	std::cout << "packet " << type << ' ' << id << ' ' << x << ' ' << y << ' ' << angle << ' ' << cannonAngle << std::endl;
+}

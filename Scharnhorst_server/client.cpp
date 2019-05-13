@@ -24,7 +24,12 @@ sf::Socket::Status Client::sendTcp(sf::Packet packet)
 sf::Socket::Status Client::sendUdp(sf::Packet packet)
 {
 	if(clientUdpPort != 0)return outSocket.send(packet,orderSocket.getRemoteAddress(),clientUdpPort);
-	else return sf::TcpSocket::Status::Error;
+	else
+	{
+		std::cout << "packet error" << std::endl;
+		system("pause");
+		return sf::TcpSocket::Status::Error;
+	}
 }
 
 sf::Socket::Status Client::receiveTcp(sf::Packet &packet)
