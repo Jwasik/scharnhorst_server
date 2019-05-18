@@ -8,6 +8,11 @@ std::string Ship::getType()
 	return this->type;
 }
 
+void Ship::setShipType(std::string type)
+{
+	this->type = type;
+}
+
 Ship::Ship()
 {
 	shape.setPointCount(7);

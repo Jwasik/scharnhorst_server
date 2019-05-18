@@ -247,6 +247,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 							newPlayerId = players.size()+1;
 						}
 						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
+						newPlayer->getShip()->setShipType(playerShipModel);
 						helloPacket.clear();
 
 						helloPacket << "PLJ";
@@ -277,6 +278,10 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						for (auto & client : clients)
 						{
 							client->sendTcp(PLApacket);
+						}
+						for (auto & player : players)
+						{
+							connectingClient->sendTcp(player->preparePLApacket());
 						}
 
 						break;

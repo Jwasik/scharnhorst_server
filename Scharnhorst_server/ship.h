@@ -24,9 +24,6 @@ public:
 
 	float calculateAcceleration();
 
-public:
-	
-
 
 	void accelerate(double);
 	void swim(double); //przesówa i obraca statek raz na klatkê oraz go rysuje(dziêki physical::draw które w przysz³oœci zostanie zmieniona na bitmapê) 
@@ -37,6 +34,7 @@ public:
 	float getCannonRotation();
 
 	std::string getType();
+	void setShipType(std::string);
 	Ship();
 	~Ship();
 };

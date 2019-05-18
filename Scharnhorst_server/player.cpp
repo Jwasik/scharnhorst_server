@@ -48,6 +48,17 @@ sf::Packet Player::preparePOSpacket()
 	return sendingPacket;
 }
 
+sf::Packet Player::preparePLApacket()
+{
+	sf::Packet PLApacket;
+	PLApacket.clear();
+	PLApacket << "PLA";
+	PLApacket << this->playerId;
+	PLApacket << this->playerName;
+	PLApacket << this->getShip()->getType();
+	return PLApacket;
+}
+
 std::shared_ptr<Ship> & Player::getShip()
 {
 	return this->playerShip;
