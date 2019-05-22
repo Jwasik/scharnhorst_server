@@ -10,6 +10,13 @@ namespace jw
 	void printStatus(const sf::Socket::Status&);
 	void printPOSPacket(sf::Packet);
 
+	struct bulletInfo
+	{
+		std::string name;
+		sf::Vector2f position;
+		float angle;
+		std::string ownerName;
+	};
 }
 
 

@@ -8,6 +8,16 @@ std::string Ship::getType()
 	return this->type;
 }
 
+std::string Ship::getName()
+{
+	return this->name;
+}
+
+void Ship::setName(std::string name)
+{
+	this->name = name;
+}
+
 void Ship::setShipType(std::string type)
 {
 	this->type = type;
@@ -47,128 +57,12 @@ Ship::~Ship()
 {
 }
 
-float Ship::calculateAcceleration()
+
+float Ship::getCannonRotation()
 {
-	waterRezistance = shipStaticPressure * actualSpeed*actualSpeed;
-	return waterRezistance;
+	return this->cannonRotation;
 }
-
-void Ship::accelerate( double deltaTime) //{-1, 0, 1}
+void Ship::setCannonRotation(float &angle)
 {
-	calculateAcceleration();
-
-	if (actualSpeed > 0)
-	{
-		actualSpeed -= waterRezistance * deltaTime;
-	}
-	else
-	{
-		actualSpeed += waterRezistance*deltaTime;
-	}
-
-	if (gear != 0)
-	{
-		actualSpeed += acceleration * gear*0.25 * deltaTime;
-	}
-
-
-	/*if (gear == 0)
-	{
-		/*if (actualSpeed == 0)return;
-		if (abs(actualSpeed) - waterRezistance * deltaTime < waterRezistance*deltaTime)actualSpeed = 0;*/
-		/*if (actualSpeed > 0)
-		{
-			actualSpeed = actualSpeed - waterRezistance*deltaTime;
-		}
-		else
-		{
-			actualSpeed = actualSpeed + waterRezistance*deltaTime;
-		}
-
-	}
-	else
-	{
-		if (gear > 0)
-		{
-			if (actualSpeed >= 0)
-			{
-				actualSpeed = actualSpeed + (force - waterRezistance)*deltaTime;
-			}
-			else
-			{
-				actualSpeed = actualSpeed + (force + waterRezistance)*deltaTime;
-			}
-		}
-		else
-		{
-			if (actualSpeed >= 0)
-			{
-				actualSpeed = actualSpeed - (force - waterRezistance)*deltaTime;
-			}
-			else
-			{
-				actualSpeed = actualSpeed - (force + waterRezistance)*deltaTime;
-			}
-		}
-
-	}
-	
-	/*if (gear == 0)
-	{
-		actualSpeed -= actualSpeed * 0.5f * deltaTime/* <-- opór wody;
-	}
-	else
-	{
-
-			if(actualSpeed > 0&&gear == -1)	actualSpeed = actualSpeed + deltaTime * acceleration - actualSpeed * 0.1f * deltaTime;
-
-	}
-	actualSpeed = actualSpeed + deltaTime * acceleration;*/
-}
-
-
-
-
-void Ship::spin(bool direction, double dtime)
-{
-	turnAcceleration = maxTurnAcceleration * sin(PI*0.85*(actualSpeed / maxSpeed));
-	//turnAcceleration = maxTurnAcceleration * (-(actualSpeed / maxSpeed * 1.5 - 0.85)*(actualSpeed / maxSpeed * 1.5 - 0.85) + 1);
-	if (direction == 1)this->rotate(dtime*turnAcceleration);
-	else this->rotate(-1 * dtime*turnAcceleration);
-}
-
-void Ship::changeGear(bool change)
-{
-	if ((change == 0) && (gear > -1))
-	{
-		gear--;
-		std::cout << "Actual gear: " << gear << std::endl;
-	}
-	else if((change == 1) && (gear < 4))
-	{
-		gear++;
-		std::cout << "Actual gear: " << gear << std::endl;//W warunkach ¿eby nie pokazywa³o za ka¿dym klikniêciem, tylko przy zmianie
-	}
-	// w przeciwnym razie nic siê nie zmieni
-}
-
-void Ship::draw(sf::RenderWindow &window)
-{
-	window.draw(this->shape);
-}
-
-void Ship::setCannonRotation(float angle)
-{
-}
-
-float Ship::getCannonRotation()//do zrobienia
-{
-	return 0;
-}
-
-void Ship::swim(double deltaTime)
-{
-	this->accelerate(deltaTime);
-	float distance = actualSpeed * deltaTime;//tutaj ta delta czasu klatki [s // poproszê w sekundach]
-	this->move(sf::Vector2f(distance * sin(this->getRotation()*PI / 180), - distance * cos(this->getRotation()*PI / 180)));
+	this->cannonRotation = angle;
 }

@@ -20,11 +20,12 @@ private:
 	std::vector<std::shared_ptr<Client>> clients;
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Bullet>> bullets;
+	std::vector<std::pair<std::string, Bullet>> bulletData;
 	sf::UdpSocket inUdpSocket;
 	sf::TcpSocket inTcpSocket;
 
 	std::shared_ptr<Player> getPlayerById(unsigned int);
-
+	void generateBullet(jw::bulletInfo&);
 public:
 	void sendingEvent(); //Funkcja obs³uguj¹ca wysy³anie, jako sta³y element gry
 	void sendTcpToEveryone(sf::Packet&);

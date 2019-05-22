@@ -4,7 +4,7 @@
 class Ship : public movable
 {
 private:
-
+	float cannonRotation;
 public:
 	float width; // [m]
 	float length; // [m]
@@ -22,18 +22,12 @@ public:
 	std::string type;
 	std::string name;
 
-	float calculateAcceleration();
-
-
-	void accelerate(double);
-	void swim(double); //przesówa i obraca statek raz na klatkê oraz go rysuje(dziêki physical::draw które w przysz³oœci zostanie zmieniona na bitmapê) 
-	void spin(bool, double); // natychmiastowy obrót o akkcelerancjê kontow¹ w czasie
-	void changeGear(bool); // zmana biegu 0 dla -- 1 dla ++
-	void draw(sf::RenderWindow&);
-	void setCannonRotation(float);
 	float getCannonRotation();
+	void setCannonRotation(float & angle);
 
 	std::string getType();
+	std::string getName();
+	void setName(std::string);
 	void setShipType(std::string);
 	Ship();
 	~Ship();

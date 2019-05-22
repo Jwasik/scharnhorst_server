@@ -24,6 +24,11 @@ std::shared_ptr<Player> Server::getPlayerById(unsigned int id)
 	return nullptr;
 }
 
+void Server::generateBullet(jw::bulletInfo &info)
+{
+
+}
+
 void Server::sendingEvent()
 {
 	for (auto & player : this->players)
@@ -64,17 +69,11 @@ void Server::acceptTcpMessages()
 		{
 			if (message == "BUL")
 			{
-				sf::Vector2f position;
-				float angle;
-				std::string type;
+				for (auto & client : clients)
+				{
+					client->sendTcp(copiedPacket);
+				}
 
-				this->sendTcpToEveryone(copiedPacket);
-
-				messagePacket >> position.x;
-				messagePacket >> position.y;
-				messagePacket >> angle;
-				messagePacket >> type;
-				this->bullets.push_back(std::make_shared<Bullet>(position,angle,type));
 			}
 
 		}
@@ -110,7 +109,6 @@ void Server::acceptUdpMessages()
 					messagePacket >> position.y;
 					messagePacket >> angle;
 					messagePacket >> cannonAngle;
-
 					auto player = this->getPlayerById(id);
 					if (player == nullptr)continue;
 					player->getShip()->setPosition(position);
@@ -238,16 +236,18 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 					if (message == "PLA")
 					{
 						unsigned int newPlayerId;
-						std::string newPlayerName, playerShipModel;
+						std::string newPlayerName, playerShipModel, playerShipName;
 						helloPacket >> newPlayerId;
 						helloPacket >> newPlayerName;
 						helloPacket >> playerShipModel;
+						helloPacket >> playerShipName;
 						if (newPlayerId == 0)
 						{
 							newPlayerId = players.size()+1;
 						}
 						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
 						newPlayer->getShip()->setShipType(playerShipModel);
+						newPlayer->getShip()->setName(playerShipName);
 						helloPacket.clear();
 
 						helloPacket << "PLJ";
@@ -274,6 +274,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						PLApacket << newPlayerId;
 						PLApacket << newPlayerName;
 						PLApacket << playerShipModel;
+						PLApacket << playerShipName;
 						
 						for (auto & client : clients)
 						{

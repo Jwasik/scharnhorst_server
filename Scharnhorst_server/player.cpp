@@ -13,25 +13,11 @@ void Player::setId(unsigned int newId)
 }
 
 
-
-void Player::doStuff(double &deltaTime)
-{
-	if (this->playerShip != nullptr)
-	{
-		playerShip->swim(deltaTime);
-	}
-}
-
 void Player::sendPlayerPosition(sf::UdpSocket &socket, sf::IpAddress &address, unsigned short &port)
 {
 	sf::Packet packet;
 	packet << "POS" << this->playerId << this->getShip()->getPosition().x << this->getShip()->getPosition().y << this->sightAngle; 
 	socket.send(packet,address,port);
-}
-
-void Player::draw(sf::RenderWindow &window)
-{
-	this->playerShip->draw(window);
 }
 
 sf::Packet Player::preparePOSpacket()
@@ -56,6 +42,7 @@ sf::Packet Player::preparePLApacket()
 	PLApacket << this->playerId;
 	PLApacket << this->playerName;
 	PLApacket << this->getShip()->getType();
+	PLApacket << this->getShip()->getName();
 	return PLApacket;
 }
 
