@@ -58,25 +58,30 @@ void Server::acceptTcpMessages()
 {
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
-	connectionClock.restart();
 	std::string message = "";
 	std::lock_guard<std::mutex> lock(this->TcpMutex);
+
+	connectionClock.restart();
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
-		inTcpSocket.receive(messagePacket);
 		sf::Packet copiedPacket = messagePacket;
-		if (messagePacket >> message)
+		for (auto & client : clients)
 		{
-			if (message == "BUL")
+			client->receiveTcp(messagePacket);
+			if (messagePacket >> message)
 			{
-				for (auto & client : clients)
+				if (message == "BUL")
 				{
-					client->sendTcp(copiedPacket);
+					for (auto & client : clients)
+					{
+						client->sendTcp(copiedPacket);
+					}
 				}
-
+				
+				messagePacket.clear();
 			}
-
 		}
+
 	}
 }
 
@@ -91,15 +96,15 @@ void Server::acceptUdpMessages()
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
 		for (auto & client : clients)
-		{		
+		{
 			//Odbieranie UDP
-			this->inUdpSocket.receive(messagePacket,add,port);
+			this->inUdpSocket.receive(messagePacket, add, port);
 
 			if (messagePacket >> message)
 			{
 				if (message == "POS")
 				{
-					
+
 					unsigned int id;
 					sf::Vector2f position;
 					float angle;
@@ -152,11 +157,11 @@ void Server::doStuff()
 	inUdpSocket.bind(sf::UdpSocket::AnyPort);
 	this->serverUdpPort = inUdpSocket.getLocalPort();
 
-	std::thread listening(&Server::joinClients,this, std::ref(this->clients));
+	std::thread listening(&Server::joinClients, this, std::ref(this->clients));
 
 	sf::IpAddress IP = sf::IpAddress::getLocalAddress();
 
-	
+
 
 	std::cout << "TCP working on " << IP << ':' << "8888" << std::endl;
 	std::cout << "UDP working on " << IP << ':' << this->inUdpSocket.getLocalPort() << std::endl;
@@ -165,11 +170,8 @@ void Server::doStuff()
 	{
 		sendingEvent();
 		acceptUdpMessages();
+		acceptTcpMessages();
 
-		/*for (auto player : players)
-		{
-			player->printPosition();
-		}*/
 	}
 	this->endFlag = 1;
 	listening.join();
@@ -204,25 +206,25 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 			unsigned short clientUdpPort;
 			std::string message;
-				
-				while (connectionClock.getElapsedTime().asSeconds() < 2)
+
+			while (connectionClock.getElapsedTime().asSeconds() < 2)
+			{
+
+				if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
 				{
-	
-					if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
+					helloPacket >> message;
+					if (message == "HI_")
 					{
-						helloPacket >> message;
-						if (message == "HI_")
-						{
-							std::cout << "received HI message" << std::endl;
-							helloPacket >> clientUdpPort;
-							connectingClient->setOutUdpPort(clientUdpPort);
-							std::cout << "new client connected with IP: " << connectingClient->getRemoteAddress() << ':' << clientUdpPort << std::endl;
-							break;
-						}
+						std::cout << "received HI message" << std::endl;
+						helloPacket >> clientUdpPort;
+						connectingClient->setOutUdpPort(clientUdpPort);
+						std::cout << "new client connected with IP: " << connectingClient->getRemoteAddress() << ':' << clientUdpPort << std::endl;
+						break;
 					}
 				}
-				helloPacket.clear();
-				
+			}
+			helloPacket.clear();
+
 			helloPacket.clear();
 			helloPacket << "HI_" << serverUdpPort;
 			std::cout << "sending HI_ : " << serverUdpPort << std::endl;
@@ -243,7 +245,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						helloPacket >> playerShipName;
 						if (newPlayerId == 0)
 						{
-							newPlayerId = players.size()+1;
+							newPlayerId = players.size() + 1;
 						}
 						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
 						newPlayer->getShip()->setShipType(playerShipModel);
@@ -252,7 +254,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 						helloPacket << "PLJ";
 						helloPacket << newPlayerId;
-						helloPacket << newPlayerName; 
+						helloPacket << newPlayerName;
 						helloPacket << float(120);//pozycja statku x
 						helloPacket << float(120);//pozycja statku y
 						helloPacket << float(0);//obrót statku
@@ -260,7 +262,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
 						std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;
 						connectingClient->sendTcp(helloPacket);
-						
+
 						helloPacket.clear();
 
 						{
@@ -275,7 +277,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						PLApacket << newPlayerName;
 						PLApacket << playerShipModel;
 						PLApacket << playerShipName;
-						
+
 						for (auto & client : clients)
 						{
 							client->sendTcp(PLApacket);
@@ -295,7 +297,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 				std::lock_guard<std::mutex> lock(this->mutex);
 				clients.push_back(connectingClient);
 			}
-			
+
 		}
 
 	}
@@ -305,8 +307,8 @@ void Server::printPOSPacket(sf::Packet packet)
 {
 	std::cout << packet.getDataSize() << ' ';
 	std::string type = "ERR";
-	unsigned int id=0;
-	float x, y, angle,cannonAngle;
+	unsigned int id = 0;
+	float x, y, angle, cannonAngle;
 	x = y = angle = cannonAngle = 420;
 	packet >> type;
 	packet >> id;
