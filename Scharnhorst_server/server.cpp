@@ -26,7 +26,7 @@ std::shared_ptr<Player> Server::getPlayerById(unsigned int id)
 
 void Server::generateBullet(jw::bulletInfo &info)
 {
-
+	//DO ZROBIENIA
 }
 
 void Server::sendingEvent()
@@ -64,21 +64,27 @@ void Server::acceptTcpMessages()
 	connectionClock.restart();
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
-		sf::Packet copiedPacket = messagePacket;
+
 		for (auto & client : clients)
 		{
 			client->receiveTcp(messagePacket);
+			sf::Packet copiedPacket = messagePacket;
+
 			if (messagePacket >> message)
 			{
 				if (message == "BUL")
 				{
+					copiedPacket >> message;
 					for (auto & client : clients)
 					{
 						client->sendTcp(copiedPacket);
 					}
+					jw::bulletInfo receivedData;
+					copiedPacket >> receivedData;
+					this->generateBullet(receivedData);
 				}
-				
 				messagePacket.clear();
+				copiedPacket.clear();
 			}
 		}
 

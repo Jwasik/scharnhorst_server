@@ -1,2 +1,6 @@
 ﻿  server.cpp
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\hitbox.h(29): warning C4240: nonstandard extension used: access to 'Hitbox::odcinek' now defined to be 'public', previously it was defined to be 'private'
+  c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\hitbox.h(16): note: see declaration of 'Hitbox::odcinek'
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\hitbox.h(41): warning C4240: nonstandard extension used: access to 'Hitbox::punktNaOkregu' now defined to be 'public', previously it was defined to be 'private'
+  c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\hitbox.h(17): note: see declaration of 'Hitbox::punktNaOkregu'
   Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

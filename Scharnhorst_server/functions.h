@@ -19,4 +19,6 @@ namespace jw
 	};
 }
 
+sf::Packet operator<<(sf::Packet&, const jw::bulletInfo&);
+sf::Packet& operator>>(sf::Packet&, jw::bulletInfo&);
 
