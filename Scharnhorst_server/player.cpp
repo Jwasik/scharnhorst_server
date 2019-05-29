@@ -51,6 +51,11 @@ std::shared_ptr<Ship> & Player::getShip()
 	return this->playerShip;
 }
 
+void Player::setShip(Ship newShip)
+{
+	*(this->playerShip) = newShip;
+}
+
 Player::Player()
 {
 	playerShip = std::make_shared<Ship>();

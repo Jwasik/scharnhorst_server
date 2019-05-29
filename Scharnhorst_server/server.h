@@ -2,8 +2,10 @@
 #include "client.h"
 #include "player.h"
 #include "bullet.h"
+#include "turret.h"
 #include "includes.h"
 #include <thread>
+#include <fstream>
 #include <mutex>
 #include <atomic>
 class Server
@@ -19,8 +21,23 @@ private:
 
 	std::vector<std::shared_ptr<Client>> clients;
 	std::vector<std::shared_ptr<Player>> players;
-	std::vector<std::shared_ptr<Bullet>> bullets;
+	std::vector<Bullet> bullets;
+
 	std::vector<std::pair<std::string, Bullet>> bulletData;
+	std::vector<std::pair<std::string, Barrel>> barrelData;
+	std::vector<std::pair<std::string, Turret>> turretData;
+	std::vector<std::pair<std::string, Ship>> shipData;
+
+	bool loadBullets();
+	bool loadBarrels();
+	bool loadTurrets();
+	bool loadShips();
+
+	Bullet findBullet(std::string);
+	Barrel findBarrel(std::string);
+	Turret findTurret(std::string);
+	Ship findShip(std::string);
+
 	sf::UdpSocket inUdpSocket;
 	sf::TcpSocket inTcpSocket;
 
@@ -32,9 +49,10 @@ public:
 	void sendUdpToEveryone(sf::Packet);
 	void acceptTcpMessages();
 	void acceptUdpMessages();
-	void doStuff();
+	void serverLoop();
 	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
 	void printPOSPacket(sf::Packet);
+	void checkColission();
 	Server();
 	~Server();
 };
