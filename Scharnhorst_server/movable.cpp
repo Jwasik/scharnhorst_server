@@ -65,7 +65,7 @@ void movable::rotate(float alpha)
 	physical::setRotation(changeAngle(alpha, physical::getRotation()));
 }
 
-Hitbox::punktNaOkregu movable::zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu)
+/*Hitbox::punktNaOkregu movable::zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu)
 {
 	Hitbox::punktNaOkregu tem;
 	tem.r = sqrt(pow(punkt.x, 2) + pow(punkt.y, 2));//d³ugoœæ tego promienia
@@ -91,7 +91,7 @@ Hitbox::punktNaOkregu movable::zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vec
 	return tem;
 }
 
-
+*/
 
 movable::~movable()
 {

@@ -5,7 +5,7 @@
 #include <windows.h>
 #include "Hitbox.h"
 
-#define M_PI 3.14159265358979323846
+/*#define M_PI 3.14159265358979323846
 Hitbox::punktNaOkregu Hitbox::zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu)
 {
 	Hitbox::punktNaOkregu tem;
@@ -234,7 +234,6 @@ void Hitbox::setColor(sf::Color c)
 sf::Vector2f Hitbox::punktNaOkregu::zamienNaPunkt()
 {
 	return sf::Vector2f(this->r*sin(sNR(this->a)), -this->r * cos(sNR(this->a)));
-
 }
 
 Hitbox::neHakenKroiz::neHakenKroiz(odcinek na, odcinek nb, sf::Vector2f nposition) : a(na), b(nb), position(nposition)
@@ -251,4 +250,4 @@ void Hitbox::neHakenKroiz::moveToPosition()
 
 	a.actualOPoints();
 	b.actualOPoints();
-}
+}*/

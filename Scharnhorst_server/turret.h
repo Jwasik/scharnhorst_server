@@ -2,6 +2,7 @@
 #include "includes.h"
 #include "bullet.h"
 #include "movable.h"
+#include "odcinek.h"
 
 struct Barrel : public movable
 {
@@ -11,7 +12,7 @@ public:
 	float length;//D³ugoœæ lufy
 	std::shared_ptr<Bullet> mainBulletType;
 	std::string name;
-	Hitbox::punktNaOkregu punkt;
+	punktNaOkregu punkt;
 	Barrel();
 	Barrel(std::string name, sf::Vector2f point);
 	Barrel(std::string name, sf::Vector2f point, sf::ConvexShape shape, Bullet, unsigned int);

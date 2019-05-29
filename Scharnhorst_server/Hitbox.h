@@ -12,7 +12,7 @@
 
 class Hitbox // klasa opisuj¹cy obiekt namacalny wirtualnie i jego ConvexShape
 {
-private:
+/*private:
 	struct odcinek;
 	struct punktNaOkregu;
 
@@ -54,7 +54,7 @@ public:
 		neHakenKroiz(odcinek na, odcinek nb, sf::Vector2f nposition);
 		sf::Vector2f position;
 		odcinek a, b;
-		void moveToPosition()
+		void moveToPosition();
 	};
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////tylko te rzeczy s¹ potrzebne do zrobienia krzy¿a jako hitboxa
 
@@ -72,5 +72,5 @@ public:
 	odcinek getOdcinek(int i);
 	sf::Vector2f getPoint(int i);
 	void setColor(sf::Color c);
-	sf::Vector2f getPosition();
+	sf::Vector2f getPosition();*/
 };

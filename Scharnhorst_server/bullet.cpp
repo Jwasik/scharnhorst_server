@@ -12,7 +12,7 @@ void Bullet::fly(double deltaTime)
 	float distance = speed * deltaTime;
 	this->shape.setPosition(this->shape.getPosition() + sf::Vector2f(distance * movementVector.x, -distance * movementVector.y));
 
-	this->tracer = Hitbox::odcinek(this->tracer.b, this->shape.getPosition());
+	this->tracer = odcinek(this->tracer.punkt1, this->shape.getPosition());
 }
 
 void Bullet::draw(sf::RenderWindow& window)
@@ -27,8 +27,8 @@ void Bullet::setBulletInfo(const jw::bulletInfo &info)
 	this->setPosition(info.position);
 	this->angle = info.angle;
 	this->shape.setRotation(info.angle);
-	this->tracer.a = info.position;
-	this->tracer.b = info.position;
+	this->tracer.punkt1 = info.position;
+	this->tracer.punkt2 = info.position;
 }
 
 std::string Bullet::getType()
@@ -39,9 +39,9 @@ std::string Bullet::getType()
 Bullet::Bullet(std::string ntype, sf::ConvexShape nbody, float nspeed, float ndamage, float nangle, sf::Vector2f punkt) : type(ntype), speed(nspeed), damage(ndamage), angle(nangle)
 {
 	this->shape = nbody;
-	this->tracer.b = punkt;
+	this->tracer.punkt2 = punkt;
 	this->shape.setRotation(angle);
-	this->shape.setPosition(tracer.b);
+	this->shape.setPosition(tracer.punkt2);
 	this->calculateMovementVector();
 	this->movementVector = sf::Vector2f(10, 10);//dla testów
 }

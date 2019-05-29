@@ -173,9 +173,9 @@ Barrel::Barrel()
 {
 }
 
-Barrel::Barrel(std::string nname, sf::Vector2f npunkt) :name(nname)
+Barrel::Barrel(std::string name, sf::Vector2f punkt) :name(name)
 {
-	this->punkt = zamienNaPunktNaOkregu(npunkt, sf::Vector2f(0, 0));
+	this->punkt = zamienNaPunktNaOkregu(punkt, sf::Vector2f(0, 0));
 }
 
 Barrel::Barrel(std::string name, sf::Vector2f punkt, sf::ConvexShape shape, Bullet mainBulletType, unsigned int barrelSize) : name(name), barrelSize(barrelSize)
@@ -251,13 +251,13 @@ void Turret::addPoint(int number, sf::Vector2f point)
 
 void Turret::addBarrel(Barrel barrel, sf::Vector2f barrelPositionFromTurret)
 {
-	barrel.punkt = movable::zamienNaPunktNaOkregu(barrelPositionFromTurret - barrel.getOrigin(), sf::Vector2f(0, 0));
+	barrel.punkt = zamienNaPunktNaOkregu(barrelPositionFromTurret - barrel.getOrigin(), sf::Vector2f(0, 0));
 	barrels.push_back(std::make_shared<Barrel>(barrel));
 }
 
 void Turret::setTurretPosition(sf::Vector2f turretPositionFromShip)
 {
-	Hitbox::punktNaOkregu temp = zamienNaPunktNaOkregu(turretPositionFromShip, sf::Vector2f(0, 0));
+	punktNaOkregu temp = zamienNaPunktNaOkregu(turretPositionFromShip, sf::Vector2f(0, 0));
 	angleFromShipOrigin = temp.a;
 	distanceFromShipOrigin = temp.r;
 	/*
