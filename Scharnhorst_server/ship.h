@@ -11,7 +11,8 @@ private:
 
 public:
 
-	float width; // [m]
+
+	float width; // [m] 
 	float length; // [m]
 	float maxSpeed; // [m/s]
 	float maxTurnAcceleration;

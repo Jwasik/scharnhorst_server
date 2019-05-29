@@ -6,13 +6,71 @@
 #include "Hitbox.h"
 
 #define M_PI 3.14159265358979323846
+Hitbox::punktNaOkregu Hitbox::zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu)
+{
+	Hitbox::punktNaOkregu tem;
+	tem.r = sqrt(pow(punkt.x, 2) + pow(punkt.y, 2));//d³ugoœæ tego promienia
+
+	tem.a = (atan(punkt.y / punkt.x) / M_PI * 180);//k¹t pomiêdzi pionowym promieniem a promieniem do punktu temx, temy
+
+	if (punkt.x >= 0 && punkt.y < 0)//ustala ¿e k¹t 0 stopni jest skierowany w górê 
+	{
+		tem.a += 90;
+	}
+	else if (punkt.x > 0 && punkt.y >= 0)
+	{
+		tem.a += 90;
+	}
+	else if (punkt.x <= 0 && punkt.y > 0)
+	{
+		tem.a += 270;
+	}
+	else
+	{
+		tem.a += 270;
+	}
+	return tem;
+}
 
 Hitbox::odcinek::odcinek(sf::Vector2f x, sf::Vector2f xx) : a(x), b(xx) 
 {
 	line = sf::VertexArray(sf::LineStrip, 2);
 	line[0].position = a;
 	line[1].position = b;
+	oa = zamienNaPunktNaOkregu(a, sf::Vector2f(0, 0));
+	ob = zamienNaPunktNaOkregu(b, sf::Vector2f(0, 0));
+
 };
+
+void Hitbox::odcinek::rotate(float angle)
+{
+	this->oa.r = this->oa.r + angle;
+	if (this->oa.r > 360)
+	{
+		this->oa.r -= 360;
+	}
+	this->ob.r = this->ob.r + angle;
+	if (this->ob.r > 360)
+	{
+		this->ob.r -= 360;
+	}
+
+	this->a = oa.zamienNaPunkt();
+	this->b = ob.zamienNaPunkt();
+	line[0].position = a;
+	line[1].position = b;
+
+}
+
+void Hitbox::odcinek::actualOPoints()
+{
+	oa = zamienNaPunktNaOkregu(a, sf::Vector2f(0, 0));
+	ob = zamienNaPunktNaOkregu(b, sf::Vector2f(0, 0));
+}
+
+
+
+
 
 void Hitbox::odcinek::prosta(Hitbox::odcinek o, float* A, float* B, float* C)
 {
@@ -26,7 +84,7 @@ bool Hitbox::odcinek::isCross(Hitbox::odcinek o1)
 	prosta(*this, &A2, &B2, &C2);
 	return ((((A1*a.x + B1 * a.y + C1)*(A1*b.x + B1 * b.y + C1)) < 0) && (((A2*o1.a.x + B2 * o1.a.y + C2)*(A2*o1.b.x + B2 * o1.b.y + C2)) < 0));
 
-}
+} 
 
 Hitbox::odcinek::odcinek()
 {
@@ -172,4 +230,25 @@ sf::Vector2f Hitbox::getPosition()
 void Hitbox::setColor(sf::Color c)
 {
 	polygon.setFillColor(c);
+}
+sf::Vector2f Hitbox::punktNaOkregu::zamienNaPunkt()
+{
+	return sf::Vector2f(this->r*sin(sNR(this->a)), -this->r * cos(sNR(this->a)));
+
+}
+
+Hitbox::neHakenKroiz::neHakenKroiz(odcinek na, odcinek nb, sf::Vector2f nposition) : a(na), b(nb), position(nposition)
+{
+
+}
+
+void Hitbox::neHakenKroiz::moveToPosition()
+{
+	this->a.a += position;
+	this->b.a += position;
+	this->a.b += position;
+	this->b.b += position;
+
+	a.actualOPoints();
+	b.actualOPoints();
 }

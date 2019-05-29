@@ -25,22 +25,43 @@ private:
 	std::vector<odcinek> odcinki; // odcinki z jakich siê sk³ada hitbox, czyli to wodec czego bêdzie wykrywana kolizja, ich iloœæ proporcjonalnie przek³ada siê na z³o¿onoœæ obliczeniow¹ kolizji
 
 public:
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct punktNaOkregu // punkt zorientowany w sposób odleg³oœæ od œrodka okrêgu: 'r', i k¹t 'a' pomiêdzy pionowym w górê promieniem 
+	{
+		sf::Vector2f zamienNaPunkt();
+		float r;
+		float a;
+	};
 	struct odcinek
 	{
+		
+		punktNaOkregu oa, ob;
 		sf::Vector2f a, b; 
 		sf::VertexArray line;
 		odcinek(sf::Vector2f x, sf::Vector2f xx);
 		void prosta(odcinek o, float* A, float* B, float* C); //liczy parametry równania prostej na podstawie 'odcinka'
 		bool isCross(odcinek o1); //sprawdza czy odcinki siê przecinaj¹
+		void rotate(float a);
+		void actualOPoints();
+
 		odcinek();
-	};
-	struct punktNaOkregu // punkt zorientowany w sposób odleg³oœæ od œrodka okrêgu: 'r', i k¹t 'a' pomiêdzy pionowym w górê promieniem 
-	{
-		float r;
-		float a;
+
+
 	};
 
+	struct neHakenKroiz
+	{
+		neHakenKroiz(odcinek na, odcinek nb, sf::Vector2f nposition);
+		sf::Vector2f position;
+		odcinek a, b;
+		void moveToPosition()
+	};
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////tylko te rzeczy s¹ potrzebne do zrobienia krzy¿a jako hitboxa
+
+
 	sf::ConvexShape polygon;// wizualna interpretacja hitboxu
+
+	static Hitbox::punktNaOkregu zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu);
 
 	Hitbox(sf::ConvexShape polygona); // konstruktor na podstawie polygonu
 	void hitboxmove(float xs, float ys);//przemieszcza wielok¹t convexShape i robi rotate o 0 co generuje nowe wartoœci odcinków na podstawie ox i oy/// move()
