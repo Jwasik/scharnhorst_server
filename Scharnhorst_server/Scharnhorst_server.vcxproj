@@ -163,6 +163,7 @@
     <ClInclude Include="Hitbox.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="movable.h" />
+    <ClInclude Include="odcinek.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="physical.h" />
     <ClInclude Include="player.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="movable.cpp" />
+    <ClCompile Include="odcinek.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
