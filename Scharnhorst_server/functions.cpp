@@ -49,7 +49,7 @@ sf::Packet operator<<(sf::Packet & packet, const jw::bulletInfo & info)
 	packet << info.position.x;
 	packet << info.position.y;
 	packet << info.angle;
-	packet << info.ownerName;
+	packet << info.ownerId;
 	return packet;
 }
 
@@ -59,7 +59,7 @@ sf::Packet& operator>>(sf::Packet &packet, jw::bulletInfo &info)
 	packet >> info.position.x;
 	packet >> info.position.y;
 	packet >> info.angle;
-	packet >> info.ownerName;
+	packet >> info.ownerId;
 
 	return packet;
 }

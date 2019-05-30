@@ -15,7 +15,7 @@ namespace jw
 		std::string name;
 		sf::Vector2f position;
 		float angle;
-		std::string ownerName;
+		unsigned int ownerId;
 	};
 }
 

@@ -11,6 +11,14 @@
 class Server
 {
 private:
+	struct hitInfo
+	{
+		sf::Vector2f position;
+		unsigned int prey;
+		unsigned int predator;
+		float damage;
+	};
+
 
 	std::mutex mutex;
 	std::mutex TcpMutex;

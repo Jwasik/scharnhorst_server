@@ -21,31 +21,24 @@ std::string Ship::getName()
 
 Ship::Ship()
 {
-	shape.move(shape.getOrigin());
-	shape.move(sf::Vector2f(128, 512));
-	shape.setFillColor(sf::Color(50, 50, 50));
-	deleteOrigin();
-	//----------------------------------------------------
-
-	this->type = "NONE";
-	this->gear = 0;
-	this->maxTurnAcceleration = 3;
-	this->enginePower = 117680000;
-	this->width = 10;
-	this->length = 10;
-	this->actualSpeed = 0;
-	this->maxSpeed = 16.25;
-	this->mass = 38900000;
-	this->acceleration = enginePower / mass;
-
-	shipStaticPressure = acceleration / (maxSpeed*maxSpeed);
+	sf::ConvexShape testShape;
+	testShape.setPointCount(4);
+	testShape.setPoint(0, sf::Vector2f(0, 0));
+	testShape.setPoint(1, sf::Vector2f(50, 0));
+	testShape.setPoint(2, sf::Vector2f(50, 100));
+	testShape.setPoint(3, sf::Vector2f(0, 100));
+	testShape.setFillColor(sf::Color::Red);
+	testShape.setOrigin(sf::Vector2f(25,50));
+	this->shape = testShape;
 }
 
 Ship::Ship(std::string &name, float parameters[6], sf::ConvexShape shape)
 {
 	this->shape = shape;
-
 	this->shape.move(shape.getOrigin());
+	auto temporaryOrigin = shape.getOrigin();
+	this->hitbox[0] = odcinek(sf::Vector2f(0,temporaryOrigin.y),sf::Vector2f(temporaryOrigin.x*2,temporaryOrigin.y));
+	this->hitbox[1] = odcinek(sf::Vector2f(temporaryOrigin.y,0),sf::Vector2f(temporaryOrigin.x,temporaryOrigin.y*2));
 	this->shape.move(sf::Vector2f(128, 512));
 	this->shape.setFillColor(sf::Color(50, 50, 50));
 	this->deleteOrigin();
@@ -62,6 +55,31 @@ Ship::Ship(std::string &name, float parameters[6], sf::ConvexShape shape)
 	this->acceleration = enginePower / mass;
 
 	shipStaticPressure = acceleration / (maxSpeed*maxSpeed);
+}
+
+Ship::Ship(const Ship &newShip)
+{
+	this->hitbox[0] = newShip.hitbox[0];
+	this->hitbox[1] = newShip.hitbox[1];
+	this->width = newShip.width;
+	this->length = newShip.length;
+	this->maxSpeed = newShip.length;
+	this->maxTurnAcceleration = newShip.maxTurnAcceleration;
+	this->turnAcceleration = newShip.turnAcceleration;
+	this->mass = newShip.mass;
+	this->enginePower = newShip.enginePower;
+	this->force = newShip.force;
+	this->waterRezistance = newShip.waterRezistance;
+	this->shipStaticPressure = newShip.shipStaticPressure;
+	this->gear = 0;
+	this->acceleration = newShip.acceleration;
+	this->actualSpeed = 0;
+	this->type = newShip.type;
+	this->name = newShip.name;
+	for (auto & turret : newShip.turrets)
+	{
+		this->turrets.push_back(std::make_shared<Turret>(*turret));
+	}
 }
 
 
@@ -145,7 +163,7 @@ void Ship::addTurret(std::shared_ptr<Turret> turret, sf::Vector2f positionFromSh
 
 void Ship::swim(double deltaTime)
 {
-	this->accelerate(deltaTime);
+	//this->accelerate(deltaTime);
 	float distance = actualSpeed * deltaTime;//tutaj ta delta czasu klatki [s // poproszê w sekundach]
 	this->move(sf::Vector2f(distance * sin(this->getRotation()*PI / 180), -distance * cos(this->getRotation()*PI / 180)));
 }

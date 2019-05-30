@@ -2,15 +2,13 @@
 #include "includes.h"
 #include "movable.h"
 #include "turret.h"
+#include "odcinek.h"
 
 
 
 class Ship : public movable
 {
 private:
-
-public:
-
 
 	float width; // [m] 
 	float length; // [m]
@@ -30,10 +28,11 @@ public:
 	float calculateAcceleration();
 	std::vector<std::shared_ptr<Turret>> turrets;
 
+	
 
 public:
 
-
+	odcinek hitbox[2];
 	void draw(sf::RenderWindow&);
 	void accelerate(double);
 	void swim(double); //przesówa i obraca statek raz na klatkê oraz go rysuje(dziêki physical::draw które w przysz³oœci zostanie zmieniona na bitmapê) 
@@ -51,6 +50,7 @@ public:
 	std::string getName();
 	Ship();
 	Ship(std::string&, float[6], sf::ConvexShape);
+	Ship(const Ship&);
 	~Ship();
 };
 

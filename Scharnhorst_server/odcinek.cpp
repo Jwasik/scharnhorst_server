@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "odcinek.h"
 
-
 odcinek::odcinek(sf::Vector2f a, sf::Vector2f b) : punkt1(a), punkt2(b)
 {
 	orgin = sf::Vector2f(0, 0);
@@ -74,7 +73,7 @@ void odcinek::prosta(odcinek o, float &A, float &B, float &C)
 	A = o.punkt1.y - o.punkt2.y; B = o.punkt2.x - o.punkt1.x; C = o.punkt1.x*o.punkt2.y - o.punkt2.x*o.punkt1.y;
 }
 
-bool odcinek::isCross(odcinek o1)
+bool odcinek::intersects(odcinek o1)
 {
 	float A1, B1, C1, A2, B2, C2;
 	prosta(o1, A1, B1, C1);
@@ -87,7 +86,6 @@ void odcinek::move(sf::Vector2f moveBy)
 	punkt1 += moveBy;
 	punkt2 += moveBy;
 	orgin += moveBy;
-
 }
 
 punktNaOkregu zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkregu)

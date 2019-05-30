@@ -171,6 +171,14 @@ void Turret::updatePosition(float nshipAngle, float mouseAngle, sf::Vector2f nsh
 
 Barrel::Barrel()
 {
+	sf::ConvexShape testShape;
+	testShape.setPointCount(4);
+	testShape.setPoint(0, sf::Vector2f(0, 0));
+	testShape.setPoint(1, sf::Vector2f(50, 0));
+	testShape.setPoint(2, sf::Vector2f(50, 100));
+	testShape.setPoint(3, sf::Vector2f(0, 100));
+	testShape.setFillColor(sf::Color::Red);
+	this->shape = testShape;
 }
 
 Barrel::Barrel(std::string name, sf::Vector2f punkt) :name(name)
@@ -240,7 +248,7 @@ void Turret::shoot(std::shared_ptr<std::vector<jw::bulletInfo>> shootedBullets, 
 {
 	for (auto & barrel : barrels)
 	{
-		(*shootedBullets).push_back(jw::bulletInfo{ barrel->mainBulletType->getType(), barrel->getPosition(), float(fmod(this->turretAngle + shipAngle,360)), "noone" });
+		(*shootedBullets).push_back(jw::bulletInfo{ barrel->mainBulletType->getType(), barrel->getPosition(), float(fmod(this->turretAngle + shipAngle,360)), 0 });
 	}
 }
 

@@ -4,6 +4,15 @@
 
 Server::Server()
 {
+	this->bulletData.push_back(std::pair<std::string,Bullet>("test",Bullet()));
+	this->barrelData.push_back(std::pair<std::string, Barrel>("test",Barrel()));
+	this->turretData.push_back(std::pair<std::string, Turret>("test",Turret()));	
+	this->shipData.push_back(std::pair<std::string, Ship>("test", Ship()));
+
+	if (!loadBullets())std::cout << "error while loading bullets" << std::endl;
+	if (!loadBarrels())std::cout << "error while loading barrels" << std::endl;
+	if (!loadTurrets())std::cout << "error while loading turrets" << std::endl;
+	if (!loadShips())std::cout << "error while loading ships" << std::endl;
 }
 
 
@@ -179,20 +188,19 @@ void Server::serverLoop()
 		sendingEvent();
 		acceptUdpMessages();
 		acceptTcpMessages();
-
 		//Kolizja
 		for (auto & player : players)
 		{
 			auto playerShip = player->getShip();
 			for (auto & bullet : bullets)
 			{
-				if (/*playerShip && bullet kolizja*/1)
+				if (bullet.ownerId = player->getPlayerId())continue;
+				if (playerShip->hitbox[0].intersects(bullet.tracer) || playerShip->hitbox[1].intersects(bullet.tracer))
 				{
 					std::cout << "kolizja" << std::endl;
 				}
 			}
 		}
-
 	}
 	this->endFlag = 1;
 	listening.join();
@@ -200,7 +208,6 @@ void Server::serverLoop()
 
 void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 {
-
 	sf::TcpListener listener;
 	if (listener.listen(8888) != sf::Socket::Done)
 	{
@@ -209,6 +216,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 	while (endFlag == 0)
 	{
+		
 		std::cout << "waiting for incoming connections" << std::endl;
 		std::shared_ptr<Client> connectingClient = std::make_shared<Client>();
 		if (listener.accept((*connectingClient).getTcpSocket()) != sf::Socket::Done)
@@ -230,7 +238,6 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 
 			while (connectionClock.getElapsedTime().asSeconds() < 2)
 			{
-
 				if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
 				{
 					helloPacket >> message;
@@ -250,11 +257,14 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 			helloPacket << "HI_" << serverUdpPort;
 			std::cout << "sending HI_ : " << serverUdpPort << std::endl;
 			connectingClient->sendTcp(helloPacket);
-
+			sf::Socket::Status connectedInfo;
 			while (connectionClock.getElapsedTime().asSeconds() < 2)
 			{
-				if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
+				
+				connectedInfo = connectingClient->receiveTcp(helloPacket);
+				if (connectedInfo == sf::Socket::Status::Done)
 				{
+
 					helloPacket >> message;
 					if (message == "PLA")
 					{
@@ -280,8 +290,8 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						helloPacket << float(120);//pozycja statku y
 						helloPacket << float(0);//obrót statku
 
-						/*std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
-						std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;*/
+						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
+						std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;
 						connectingClient->sendTcp(helloPacket);
 
 						helloPacket.clear();
@@ -314,6 +324,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 			}
 			connectingClient->setBlocking(false);
 
+			if (connectedInfo != sf::Socket::Status::Done)continue;
 			{
 				std::lock_guard<std::mutex> lock(this->mutex);
 				clients.push_back(connectingClient);
@@ -339,7 +350,7 @@ void Server::printPOSPacket(sf::Packet packet)
 
 bool Server::loadBullets()
 {
-	std::fstream in("gamedata/bullets.dat");
+	std::ifstream in("gamedata/bullets.dat");
 	if (!in.good())	return 0;
 
 	std::string name, endWord;
@@ -385,7 +396,7 @@ bool Server::loadBullets()
 }
 bool Server::loadBarrels()
 {
-	std::fstream in("gamedata/barrels.dat");
+	std::ifstream in("gamedata/barrels.dat");
 	if (!in.good())	return 0;
 
 	std::string name, mainBulletType, endWord;
@@ -433,7 +444,7 @@ bool Server::loadBarrels()
 }
 bool Server::loadTurrets()
 {
-	std::fstream in("gamedata/turrets.dat");
+	std::ifstream in("gamedata/turrets.dat");
 	if (!in.good())return 0;
 
 	std::string name, cannonType, endWord;
@@ -492,7 +503,7 @@ bool Server::loadTurrets()
 }
 bool Server::loadShips()
 {
-	std::fstream in("gamedata/ships.dat");
+	std::ifstream in("gamedata/ships.dat");
 	if (!in.good())return 0;
 
 	std::string name, endWord;
