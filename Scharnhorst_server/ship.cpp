@@ -166,6 +166,11 @@ void Ship::swim(double deltaTime)
 	//this->accelerate(deltaTime);
 	float distance = actualSpeed * deltaTime;//tutaj ta delta czasu klatki [s // poproszê w sekundach]
 	this->move(sf::Vector2f(distance * sin(this->getRotation()*PI / 180), -distance * cos(this->getRotation()*PI / 180)));
+	
+	this->hitbox[0].setPosition(shape.getPosition());
+	this->hitbox[1].setPosition(shape.getPosition());
+
+
 }
 
 void Ship::setTurrets(float &mouseAngle, double &dTime)
