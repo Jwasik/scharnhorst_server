@@ -105,3 +105,19 @@ punktNaOkregu zamienNaPunktNaOkregu(sf::Vector2f punkt, sf::Vector2f srodekOkreg
 	}
 	return tem;
 }
+
+void odcinek::setPosition(sf::Vector2f position)
+{
+	punkt1 -= orgin;
+	punkt2 -= orgin;
+
+	orgin = position;
+
+	punkt1 += orgin;
+	punkt2 += orgin;
+
+
+
+
+
+}

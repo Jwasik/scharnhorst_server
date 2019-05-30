@@ -35,6 +35,7 @@ public:
 	void rotate(float a); //obraca woko³o orgin bo woko³o czegoœ musi
 	void setRotation(float a); //obraca woko³o orgin bo woko³o czegoœ musi
 	void move(sf::Vector2f moveBy);//przemieszcza punkty i orgin
+	void setPosition(sf::Vector2f);
 	void updateVisual(); //aktualizuje line
 	void setOrgin(sf::Vector2f);//ustawia orgin
 
