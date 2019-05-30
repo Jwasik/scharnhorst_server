@@ -29,6 +29,7 @@ void Bullet::setBulletInfo(const jw::bulletInfo &info)
 	this->shape.setRotation(info.angle);
 	this->tracer.punkt1 = info.position;
 	this->tracer.punkt2 = info.position;
+	this->ownerId = info.ownerId;
 }
 
 std::string Bullet::getType()

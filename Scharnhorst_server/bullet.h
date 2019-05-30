@@ -14,6 +14,7 @@ protected:
 public:
 	odcinek tracer;
 
+	unsigned int ownerId;
 	Bullet();
 	Bullet(const Bullet&);
 	Bullet(std::string type, sf::ConvexShape body, float speed, float damage, float angle, sf::Vector2f punkt);
