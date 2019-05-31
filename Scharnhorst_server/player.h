@@ -19,6 +19,8 @@ public:
 
 	std::shared_ptr<Ship>& getShip();
 	void setShip(Ship);
+	void setSightAngle(float);
+
 	Player();
 	Player(unsigned int,std::string);
 	~Player();

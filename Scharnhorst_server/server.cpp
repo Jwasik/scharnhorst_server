@@ -83,6 +83,7 @@ void Server::acceptTcpMessages()
 
 			if (messagePacket >> message)
 			{
+				client->resetConnectionClock();
 				if (message == "BUL")
 				{
 					copiedPacket >> message;
@@ -94,6 +95,10 @@ void Server::acceptTcpMessages()
 					copiedPacket >> receivedData;
 					this->generateBullet(receivedData);
 				}
+				/*if (message == "AFK")
+				{
+				//i tak siê resetuje zegar
+				}*/
 				messagePacket.clear();
 				copiedPacket.clear();
 			}
@@ -112,16 +117,11 @@ void Server::acceptUdpMessages()
 	std::string message = "";
 	while (connectionClock.getElapsedTime().asMilliseconds() < 30)
 	{
-		for (auto & client : clients)
-		{
-			//Odbieranie UDP
-			this->inUdpSocket.receive(messagePacket, add, port);
-
+			this->inUdpSocket.receive(messagePacket, add, port); 
 			if (messagePacket >> message)
 			{
 				if (message == "POS")
 				{
-
 					unsigned int id;
 					sf::Vector2f position;
 					float angle;
@@ -135,7 +135,7 @@ void Server::acceptUdpMessages()
 					if (player == nullptr)continue;
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
-					player->getShip()->setCannonRotation(cannonAngle);
+					player->setSightAngle(cannonAngle);
 				}
 				if (message == "PPS")
 				{
@@ -162,12 +162,18 @@ void Server::acceptUdpMessages()
 				}
 			}
 			messagePacket.clear();
-		}
 	}
 }
 
 void Server::serverLoop()
 {
+	sf::Clock actionClock;
+	sf::Clock afkClock;
+	sf::Clock deltaTimeClock;
+	actionClock.restart();
+	afkClock.restart();
+	deltaTimeClock.restart();
+
 	clients.clear();
 
 	inUdpSocket.setBlocking(false);
@@ -200,6 +206,44 @@ void Server::serverLoop()
 					std::cout << "kolizja" << std::endl;
 				}
 			}
+		}
+
+		if (afkClock.getElapsedTime().asSeconds() > 10)//szuka od³¹czonych klientów
+		{
+			for (auto it = clients.begin(); it != clients.end(); it++)
+			{
+				if ((*it)->getTimeFromLastActivity().asSeconds() > 5)
+				{
+					std::cout << "player " << (*it)->getPlayerId() << " unavaible from " ;
+					std::cout << (*it)->getTimeFromLastActivity().asSeconds() <<" seconds"<< std::endl;
+					std::cout << "disconnecting AFK player" << std::endl;
+					sf::Packet exitPacket;
+					exitPacket << "EXT";
+					exitPacket << (*it)->getPlayerId();
+					this->sendTcpToEveryone(exitPacket);
+
+					for (auto it2 = players.begin(); it2 != players.end(); it2++)
+					{
+						if ((*it2)->getPlayerId() == (*it)->getPlayerId())
+						{
+							players.erase(it2);
+							break;
+						}
+					}
+					clients.erase(it);
+					std::cout<<"lasts " << clients.size() <<" clients"<< std::endl;
+					break;
+				}
+			}
+			afkClock.restart();
+		}
+
+		if (actionClock.getElapsedTime().asSeconds() > 4)
+		{
+			sf::Packet afkPacket;
+			afkPacket << "AFK";//zapytanie czy klient jest aktywny
+			this->sendTcpToEveryone(afkPacket);
+			actionClock.restart();
 		}
 	}
 	this->endFlag = 1;
@@ -317,6 +361,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 						{
 							connectingClient->sendTcp(player->preparePLApacket());
 						}
+						connectingClient->setPlayerId(newPlayerId);
 
 						break;
 					}
@@ -327,6 +372,7 @@ void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 			if (connectedInfo != sf::Socket::Status::Done)continue;
 			{
 				std::lock_guard<std::mutex> lock(this->mutex);
+				connectingClient->resetConnectionClock();
 				clients.push_back(connectingClient);
 			}
 

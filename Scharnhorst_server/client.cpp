@@ -4,6 +4,7 @@
 
 Client::Client()
 {
+	this->connectionClock.restart();
 	this->clientUdpPort = 0;
 }
 
@@ -47,6 +48,21 @@ unsigned int Client::getOutUdpPort()
 	return this->clientUdpPort;
 }
 
+unsigned int Client::getPlayerId()
+{
+	return this->playerId;
+}
+
+sf::Time Client::getTimeFromLastActivity()
+{
+	return this->connectionClock.getElapsedTime();
+}
+
+void Client::resetConnectionClock()
+{
+	this->connectionClock.restart();
+}
+
 void Client::setBlocking(bool status)
 {
 	orderSocket.setBlocking(status);
@@ -56,4 +72,9 @@ void Client::setOutUdpPort(unsigned int port)
 {
 	this->clientAddress = orderSocket.getRemoteAddress();
 	this->clientUdpPort = port;
+}
+
+void Client::setPlayerId(unsigned int id)
+{
+	this->playerId = id;
 }

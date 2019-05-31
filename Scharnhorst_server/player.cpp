@@ -29,7 +29,7 @@ sf::Packet Player::preparePOSpacket()
 	sendingPacket << this->getShip()->getPosition().x;
 	sendingPacket << this->getShip()->getPosition().y;
 	sendingPacket << this->getShip()->getRotation();
-	sendingPacket << this->getShip()->getCannonRotation();
+	sendingPacket << this->sightAngle;
 
 	return sendingPacket;
 }
@@ -54,6 +54,11 @@ std::shared_ptr<Ship> & Player::getShip()
 void Player::setShip(Ship newShip)
 {
 	*(this->playerShip) = newShip;
+}
+
+void Player::setSightAngle(float angle)
+{
+	this->sightAngle = angle;
 }
 
 Player::Player()
