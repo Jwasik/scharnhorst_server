@@ -167,6 +167,11 @@ void Server::acceptUdpMessages()
 
 void Server::serverLoop()
 {
+	sf::Clock delta;
+	delta.restart();
+	float deltaTime;
+
+
 	sf::Clock actionClock;
 	sf::Clock afkClock;
 	sf::Clock deltaTimeClock;
@@ -191,6 +196,13 @@ void Server::serverLoop()
 	//MAIN LOOP
 	while (1)
 	{
+		deltaTime = delta.restart().asSeconds();
+
+		for (auto & bullet : bullets)
+		{
+			bullet.fly(deltaTime);
+		}
+
 		sendingEvent();
 		acceptUdpMessages();
 		acceptTcpMessages();
@@ -200,7 +212,12 @@ void Server::serverLoop()
 			auto playerShip = player->getShip();
 			for (auto & bullet : bullets)
 			{
-				if (bullet.ownerId = player->getPlayerId())continue;
+				if (bullet.ownerId == player->getPlayerId())
+				{
+					continue;
+				}
+				//std::cout << "c" << std::endl;
+
 				if (playerShip->hitbox[0].intersects(bullet.tracer) || playerShip->hitbox[1].intersects(bullet.tracer))
 				{
 					std::cout << "kolizja" << std::endl;

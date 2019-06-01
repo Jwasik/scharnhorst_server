@@ -1,18 +1,9 @@
-﻿  server.cpp
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(197): error C2039: „ownerId”: Nie jest składową „Bullet”
-  c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\bullet.h(5): note: zobacz deklarację „Bullet”
-  ship.cpp
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(102): warning C4244: "-=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(106): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(111): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(120): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(121): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(122): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(167): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(168): warning C4244: "argument": konwersja z "double" do "T", możliwa utrata danych
-          with
-          [
-              T=float
-          ]
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(181): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+﻿  odcinek.cpp
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\odcinek.cpp(22): warning C4244: "return": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\odcinek.cpp(104): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+  server.cpp
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(466): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(514): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(573): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
   Generowanie kodu...
+  Scharnhorst_server.vcxproj -> C:\Users\Maciej\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

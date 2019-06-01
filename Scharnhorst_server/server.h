@@ -60,7 +60,7 @@ public:
 	void serverLoop();
 	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
 	void printPOSPacket(sf::Packet);
-	void checkColission();
+	//void checkColission();
 	Server();
 	~Server();
 };
