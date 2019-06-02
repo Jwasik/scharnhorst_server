@@ -33,7 +33,7 @@ std::shared_ptr<Player> Server::getPlayerById(unsigned int id)
 	return nullptr;
 }
 
-void Server::generateBullet(jw::bulletInfo &info)
+void Server::generateBullet(bulletInfo &info)
 {
 	std::shared_ptr<Bullet> newBullet = std::make_shared<Bullet>(this->findBullet(info.name));
 	newBullet->setBulletInfo(info);
@@ -48,7 +48,7 @@ void Server::sendingEvent()
 	}
 }
 
-void Server::sendTcpToEveryone(sf::Packet &packet)
+void Server::sendTcpToEveryone(sf::Packet packet)
 {
 	std::lock_guard<std::mutex> lock(this->TcpMutex);
 	for (auto & client : clients)
@@ -65,7 +65,7 @@ void Server::sendUdpToEveryone(sf::Packet packet)
 	}
 }
 
-void Server::acceptTcpMessages()
+void Server::receiveTcpMessages()
 {
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
@@ -91,7 +91,7 @@ void Server::acceptTcpMessages()
 					{
 						client->sendTcp(copiedPacket);
 					}
-					jw::bulletInfo receivedData;
+					bulletInfo receivedData;
 					copiedPacket >> receivedData;
 					this->generateBullet(receivedData);
 				}
@@ -107,7 +107,7 @@ void Server::acceptTcpMessages()
 	}
 }
 
-void Server::acceptUdpMessages()
+void Server::receiveUdpMessages()
 {
 	sf::Packet messagePacket;
 	sf::Clock connectionClock;
@@ -204,23 +204,27 @@ void Server::serverLoop()
 		}
 
 		sendingEvent();
-		acceptUdpMessages();
-		acceptTcpMessages();
+		receiveUdpMessages();
+		receiveTcpMessages();
 		//Kolizja
 		for (auto & player : players)
 		{
 			auto playerShip = player->getShip();
-			for (auto & bullet : bullets)
+			auto it = bullets.begin();
+			for (auto it = bullets.begin(); it!=bullets.end();it++)
 			{
-				if (bullet.ownerId == player->getPlayerId())
+
+				if (it->ownerId == player->getPlayerId())
 				{
 					continue;
 				}
-				//std::cout << "c" << std::endl;
-
-				if (playerShip->hitbox[0].intersects(bullet.tracer) || playerShip->hitbox[1].intersects(bullet.tracer))
+				if (playerShip->hitbox[0].intersects(it->tracer) || playerShip->hitbox[1].intersects(it->tracer))
 				{
-					std::cout << "kolizja" << std::endl;
+					std::cout <<it->ownerId << std::endl;
+					player->subtractHP(it->getDamage());
+					this->sendTcpToEveryone(this->prepareHITpacket(player,*it));
+					it=bullets.erase(it);	
+					if (it == bullets.end())break;
 				}
 			}
 		}
@@ -409,6 +413,19 @@ void Server::printPOSPacket(sf::Packet packet)
 	packet >> id;
 	packet >> x, y, angle, cannonAngle;
 	std::cout << "packet " << type << ' ' << id << ' ' << x << ' ' << y << ' ' << angle << ' ' << cannonAngle << std::endl;
+}
+
+sf::Packet Server::prepareHITpacket(std::shared_ptr<Player> &player, Bullet &bullet)
+{
+	std::string order = "HIT";
+	sf::Packet hitPacket;
+	hitPacket << order << player->getPlayerId();
+	hitPacket << bullet;
+	hitPacket<<player->getPlayerHP();
+	/*To potem wywaliæ*/
+	hitPacket << bullet.getPosition().x;
+	hitPacket << bullet.getPosition().y;
+	return hitPacket;
 }
 
 bool Server::loadBullets()

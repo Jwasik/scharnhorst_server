@@ -50,16 +50,17 @@ private:
 	sf::TcpSocket inTcpSocket;
 
 	std::shared_ptr<Player> getPlayerById(unsigned int);
-	void generateBullet(jw::bulletInfo&);
+	void generateBullet(bulletInfo&);
 public:
 	void sendingEvent(); //Funkcja obs³uguj¹ca wysy³anie, jako sta³y element gry
-	void sendTcpToEveryone(sf::Packet&);
+	void sendTcpToEveryone(sf::Packet);
 	void sendUdpToEveryone(sf::Packet);
-	void acceptTcpMessages();
-	void acceptUdpMessages();
+	void receiveTcpMessages();
+	void receiveUdpMessages();
 	void serverLoop();
 	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
 	void printPOSPacket(sf::Packet);
+	sf::Packet prepareHITpacket(std::shared_ptr<Player>&,Bullet&);
 	//void checkColission();
 	Server();
 	~Server();

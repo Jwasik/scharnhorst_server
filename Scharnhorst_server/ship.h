@@ -8,7 +8,7 @@
 
 class Ship : public movable
 {
-private:
+public:
 
 	float width; // [m] 
 	float length; // [m]
@@ -28,10 +28,6 @@ private:
 	float calculateAcceleration();
 	std::vector<std::shared_ptr<Turret>> turrets;
 
-	
-
-public:
-
 	odcinek hitbox[2];
 	void draw(sf::RenderWindow&);
 	void accelerate(double);
@@ -43,7 +39,7 @@ public:
 	float getCannonRotation();
 	void addPoint(unsigned short, sf::Vector2f&);
 	void addTurret(std::shared_ptr<Turret>, sf::Vector2f);
-	void shoot(std::shared_ptr<std::vector<jw::bulletInfo>>);
+	void shoot(std::shared_ptr<std::vector<bulletInfo>>);
 
 	std::string getType();
 	void setName(std::string);

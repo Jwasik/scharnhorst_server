@@ -1,8 +1,7 @@
 #pragma once
 #include "includes.h"
 
-namespace jw
-{
+
 	//TCPConnect(sf::socket,std::string adres) ³¹czy socket z podanym adresem.
 
 
@@ -16,9 +15,10 @@ namespace jw
 		sf::Vector2f position;
 		float angle;
 		unsigned int ownerId;
+		unsigned int bulletId;
 	};
-}
 
-sf::Packet operator<<(sf::Packet&, const jw::bulletInfo&);
-sf::Packet& operator>>(sf::Packet&, jw::bulletInfo&);
+sf::Packet operator<<(sf::Packet&, const bulletInfo&);
+sf::Packet& operator>>(sf::Packet&, bulletInfo&);
+
 

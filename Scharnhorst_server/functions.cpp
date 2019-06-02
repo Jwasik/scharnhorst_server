@@ -5,7 +5,7 @@
 
 
 
-void jw::printStatus(const sf::Socket::Status &status)
+void printStatus(const sf::Socket::Status &status)
 {
 	switch (status)
 	{
@@ -30,7 +30,7 @@ void jw::printStatus(const sf::Socket::Status &status)
 	}
 }
 
-void jw::printPOSPacket(sf::Packet packet)
+void printPOSPacket(sf::Packet packet)
 {
 	std::cout << packet.getDataSize() << ' ';
 	std::string type = "ERR";
@@ -43,23 +43,25 @@ void jw::printPOSPacket(sf::Packet packet)
 	std::cout << "packet " << type << ' ' << id << ' ' << x << ' ' << y << ' ' << angle << ' ' << cannonAngle << std::endl;
 }
 
-sf::Packet operator<<(sf::Packet & packet, const jw::bulletInfo & info)
+sf::Packet operator<<(sf::Packet & packet, const bulletInfo & info)
 {
 	packet << info.name;
 	packet << info.position.x;
 	packet << info.position.y;
 	packet << info.angle;
 	packet << info.ownerId;
+	packet << info.bulletId;
 	return packet;
 }
 
-sf::Packet& operator>>(sf::Packet &packet, jw::bulletInfo &info)
+sf::Packet& operator>>(sf::Packet &packet, bulletInfo &info)
 {
 	packet >> info.name;
 	packet >> info.position.x;
 	packet >> info.position.y;
 	packet >> info.angle;
 	packet >> info.ownerId;
+	packet >> info.bulletId;
 
 	return packet;
 }

@@ -54,11 +54,23 @@ std::shared_ptr<Ship> & Player::getShip()
 void Player::setShip(Ship newShip)
 {
 	*(this->playerShip) = newShip;
+	this->maxHP = newShip.width * newShip.length * 16;
+	this->HP = maxHP;
 }
 
 void Player::setSightAngle(float angle)
 {
 	this->sightAngle = angle;
+}
+
+void Player::subtractHP(float damage)
+{
+	this->HP -= damage;
+}
+
+double Player::getPlayerHP()
+{
+	return this->HP;
 }
 
 Player::Player()

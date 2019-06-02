@@ -1,6 +1,15 @@
 #include "pch.h"
 #include "bullet.h"
 
+
+sf::Packet & operator<<(sf::Packet& packet, Bullet& bullet)
+{
+	packet << bullet.bulletId;
+	packet << bullet.ownerId;
+	packet << bullet.getDamage();
+	return packet;
+}
+
 void Bullet::calculateMovementVector()
 {
 	movementVector.x = sin(stopnieNaRadiany(this->angle));
@@ -21,7 +30,7 @@ void Bullet::draw(sf::RenderWindow& window)
 	window.draw(this->shape);
 }
 
-void Bullet::setBulletInfo(const jw::bulletInfo &info)
+void Bullet::setBulletInfo(const bulletInfo &info)
 {
 	this->type = info.name;
 	this->setPosition(info.position);
@@ -30,6 +39,12 @@ void Bullet::setBulletInfo(const jw::bulletInfo &info)
 	this->tracer.punkt1 = info.position;
 	this->tracer.punkt2 = info.position;
 	this->ownerId = info.ownerId;
+	this->bulletId = info.bulletId;
+}
+
+float Bullet::getDamage()
+{
+	return this->damage;
 }
 
 std::string Bullet::getType()
@@ -69,6 +84,8 @@ Bullet::Bullet(const Bullet &origin)
 	this->angle = origin.angle;
 	this->shape = origin.shape;
 	this->tracer = origin.tracer;
+	this->ownerId = origin.ownerId;
+	this->bulletId = origin.bulletId;
 	this->calculateMovementVector();
 }
 

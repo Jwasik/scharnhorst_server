@@ -58,7 +58,7 @@ public:
 	float getShipAngle();
 	float getAngleByWater();
 	float getTurretAngle();
-	void shoot(std::shared_ptr<std::vector<jw::bulletInfo>>, float&);
+	void shoot(std::shared_ptr<std::vector<bulletInfo>>, float&);
 	void addPoint(int number, sf::Vector2f point);
 	void addBarrel(Barrel, sf::Vector2f);
 	void setTurretPosition(sf::Vector2f);

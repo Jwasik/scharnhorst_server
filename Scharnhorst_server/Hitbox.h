@@ -4,7 +4,6 @@
 #include <iostream>
 #include <cmath> //pierwiastkie i potêgi
 #include <windows.h>
-#include "Hitbox.h"
 
 #define M_PI 3.14159265358979323846
 

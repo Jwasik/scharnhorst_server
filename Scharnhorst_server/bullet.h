@@ -1,7 +1,11 @@
 #pragma once
 #include "includes.h"
+#include "functions.h"
 #include "odcinek.h"
 #include "movable.h"
+
+
+
 class Bullet : public movable
 {
 protected:
@@ -15,6 +19,7 @@ public:
 	odcinek tracer;
 
 	unsigned int ownerId;
+	unsigned int bulletId;
 	Bullet();
 	Bullet(const Bullet&);
 	Bullet(std::string type, sf::ConvexShape body, float speed, float damage, float angle, sf::Vector2f punkt);
@@ -23,9 +28,11 @@ public:
 	void calculateMovementVector();
 	void fly(double deltaTime);
 	void draw(sf::RenderWindow&);
-	void setBulletInfo(const jw::bulletInfo&);
+	void setBulletInfo(const bulletInfo&);
+	float getDamage();
 	std::string getType();
 
 	~Bullet();
 };
 
+sf::Packet& operator<<(sf::Packet&, Bullet&);

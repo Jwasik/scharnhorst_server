@@ -4,11 +4,16 @@
 class Player
 {
 private:
+	double HP;
+	double maxHP;
+
 	float sightAngle = 0;
 	std::string playerName;
 	unsigned int playerId;
 
 public:
+
+
 	std::shared_ptr<Ship> playerShip;
 
 	unsigned int getPlayerId();
@@ -20,7 +25,8 @@ public:
 	std::shared_ptr<Ship>& getShip();
 	void setShip(Ship);
 	void setSightAngle(float);
-
+	void subtractHP(float);
+	double getPlayerHP();
 	Player();
 	Player(unsigned int,std::string);
 	~Player();
