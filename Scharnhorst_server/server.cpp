@@ -136,6 +136,9 @@ void Server::receiveUdpMessages()
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
 					player->getShip()->setHitboxPosition(position);
+					player->getShip()->hitbox[0].rotate(angle - player->getShip()->hitbox[0].oa.a);
+					player->getShip()->hitbox[1].rotate(angle - player->getShip()->hitbox[1].oa.a);
+
 					player->setSightAngle(cannonAngle);
 				}
 				if (message == "PPS")
@@ -169,6 +172,9 @@ void Server::receiveUdpMessages()
 void Server::serverLoop()
 {
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML test");
+	sf::View view;
+	view.setSize(sf::Vector2f(10000, 10000));
+	window.setView(view);
 	window.setActive();
 	sf::Clock delta;
 	delta.restart();
@@ -227,7 +233,10 @@ void Server::serverLoop()
 		} 
 		for (auto & player : players)
 		{
+			//std::cout << player->getShip()->hitbox[0].punkt1.x << " " << player->getShip()->hitbox[0].punkt1.y << std::endl;
 			window.draw(player->getShip()->hitbox[0].line);
+			window.draw(player->getShip()->hitbox[1].line);
+
 		}
 		window.display();
 		window.clear();
