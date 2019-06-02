@@ -64,5 +64,7 @@ public:
 	//void checkColission();
 	Server();
 	~Server();
+
+
 };
 

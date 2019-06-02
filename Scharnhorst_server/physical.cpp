@@ -20,6 +20,7 @@ physical::physical(sf::ConvexShape nshape) : shape(nshape)
 void physical::setPosition(sf::Vector2f position)
 {
 	this->shape.setPosition(position);
+	
 }
 
 void physical::setRotation(float alpha)

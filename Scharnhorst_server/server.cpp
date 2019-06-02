@@ -135,6 +135,7 @@ void Server::receiveUdpMessages()
 					if (player == nullptr)continue;
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
+					player->getShip()->setHitboxPosition(position);
 					player->setSightAngle(cannonAngle);
 				}
 				if (message == "PPS")
@@ -167,6 +168,8 @@ void Server::receiveUdpMessages()
 
 void Server::serverLoop()
 {
+	sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML test");
+	window.setActive();
 	sf::Clock delta;
 	delta.restart();
 	float deltaTime;
@@ -193,15 +196,45 @@ void Server::serverLoop()
 
 	std::cout << "TCP working on " << IP << ':' << "8888" << std::endl;
 	std::cout << "UDP working on " << IP << ':' << this->inUdpSocket.getLocalPort() << std::endl;
+	
+	sf::ConvexShape pol;//test
+	pol.setPointCount(4);
+	pol.setPoint(0, sf::Vector2f(100, -100));
+	pol.setPoint(1, sf::Vector2f(100, 100));
+	pol.setPoint(2, sf::Vector2f(-100, 100));
+	pol.setPoint(3, sf::Vector2f(-100, -100));
+	
+	pol.setPosition(750, 750);
 	//MAIN LOOP
 	while (1)
 	{
-		deltaTime = delta.restart().asSeconds();
-
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
 		for (auto & bullet : bullets)
 		{
 			bullet.fly(deltaTime);
 		}
+
+		for (auto & bullet : bullets)
+		{
+			//window.draw(pol);
+			bullet.draw(window);
+			//std::cout << bullet.tracer.punkt1.x << " " << bullet.tracer.punkt1.y << std::endl;
+		} 
+		for (auto & player : players)
+		{
+			window.draw(player->getShip()->hitbox[0].line);
+		}
+		window.display();
+		window.clear();
+
+		deltaTime = delta.restart().asSeconds();
+
+
 
 		sendingEvent();
 		receiveUdpMessages();
@@ -266,9 +299,13 @@ void Server::serverLoop()
 			this->sendTcpToEveryone(afkPacket);
 			actionClock.restart();
 		}
+		
 	}
 	this->endFlag = 1;
 	listening.join();
+
+
+	
 }
 
 void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)

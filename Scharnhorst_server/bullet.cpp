@@ -18,20 +18,26 @@ void Bullet::calculateMovementVector()
 
 void Bullet::fly(double deltaTime)
 {
+	
 	float distance = speed * deltaTime * 8;
 	this->shape.setPosition(this->shape.getPosition() + sf::Vector2f(distance * movementVector.x, -distance * movementVector.y));
 
-	this->tracer = odcinek(this->tracer.punkt2, this->shape.getPosition());
+	this->tracer.punkt1 = this->tracer.punkt2;
+	this->tracer.punkt2 = this->shape.getPosition();
+	tracer.updateVisual();
+
+	//std::cout << deltaTime << std::endl;
 }
 
 void Bullet::draw(sf::RenderWindow& window)
 {
 	window.draw(this->tracer.line);
-	window.draw(this->shape);
+	//window.draw(this->shape);
 }
 
 void Bullet::setBulletInfo(const bulletInfo &info)
 {
+	//std::cout << 1;
 	this->type = info.name;
 	this->setPosition(info.position);
 	this->angle = info.angle;
@@ -40,6 +46,7 @@ void Bullet::setBulletInfo(const bulletInfo &info)
 	this->tracer.punkt2 = info.position;
 	this->ownerId = info.ownerId;
 	this->bulletId = info.bulletId;
+
 }
 
 float Bullet::getDamage()
@@ -54,6 +61,8 @@ std::string Bullet::getType()
 
 Bullet::Bullet(std::string ntype, sf::ConvexShape nbody, float nspeed, float ndamage, float nangle, sf::Vector2f punkt) : type(ntype), speed(nspeed), damage(ndamage), angle(nangle)
 {
+
+
 	this->shape = nbody;
 	this->tracer.punkt2 = punkt;
 	this->shape.setRotation(angle);
@@ -64,6 +73,8 @@ Bullet::Bullet(std::string ntype, sf::ConvexShape nbody, float nspeed, float nda
 
 Bullet::Bullet(std::string name, sf::ConvexShape body, float speed, float damage)
 {
+
+
 	this->type = name;
 	this->shape = body;
 	this->speed = speed;
@@ -78,6 +89,8 @@ Bullet::Bullet()
 
 Bullet::Bullet(const Bullet &origin)
 {
+	//std::cout << 4;
+
 	this->type = origin.type;
 	this->speed = origin.speed;
 	this->damage = origin.damage;

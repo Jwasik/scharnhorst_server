@@ -3,6 +3,7 @@
 
 odcinek::odcinek(sf::Vector2f a, sf::Vector2f b) : punkt1(a), punkt2(b)
 {
+	std::cout << "o";
 	orgin = sf::Vector2f(0, 0);
 	oa.a = 0;
 	ob.a = 0;
@@ -66,6 +67,8 @@ void odcinek::setOrgin(sf::Vector2f norgin)
 
 odcinek::odcinek()
 {
+	orgin = sf::Vector2f(0, 0);
+	line = sf::VertexArray(sf::LineStrip, 2);
 }
 
 void odcinek::updateVisual()

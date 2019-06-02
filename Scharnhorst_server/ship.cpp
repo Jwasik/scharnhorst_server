@@ -61,6 +61,7 @@ Ship::Ship(const Ship &newShip)
 {
 	this->hitbox[0] = newShip.hitbox[0];
 	this->hitbox[1] = newShip.hitbox[1];
+
 	this->width = newShip.width;
 	this->length = newShip.length;
 	this->maxSpeed = newShip.length;
@@ -167,10 +168,18 @@ void Ship::swim(double deltaTime)
 	float distance = actualSpeed * deltaTime;//tutaj ta delta czasu klatki [s // poproszê w sekundach]
 	this->move(sf::Vector2f(distance * sin(this->getRotation()*PI / 180), -distance * cos(this->getRotation()*PI / 180)));
 	
-	this->hitbox[0].setPosition(shape.getPosition());
-	this->hitbox[1].setPosition(shape.getPosition());
+	this->setHitboxPosition(this->shape.getPosition());
 
 
+}
+
+void Ship::setHitboxPosition(sf::Vector2f position)
+{
+	this->hitbox[0].setPosition(position);
+	this->hitbox[1].setPosition(position);
+
+	this->hitbox[0].updateVisual();
+	this->hitbox[1].updateVisual();
 }
 
 void Ship::setTurrets(float &mouseAngle, double &dTime)
