@@ -26,9 +26,10 @@ public:
 	punktNaOkregu oa, ob; //i tak musz¹ byæ u¿ywane przy ka¿dej rotacji wiêc niech s¹ dostêpne tu ca³y czas 
 	sf::Vector2f punkt1, punkt2; //punkty
 	sf::VertexArray line; //wizualizacja
-
+	 
 	odcinek(sf::Vector2f punkt1, sf::Vector2f punkt2);
 	
+	float angleFromOA;
 	void prosta(odcinek o, float &A, float &B, float &C); //liczy parametry równania prostej na podstawie 'odcinka'
 	bool intersects(odcinek o1); //sprawdza czy odcinki siê przecinaj¹
 

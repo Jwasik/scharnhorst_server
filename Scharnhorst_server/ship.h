@@ -41,6 +41,7 @@ public:
 	void addTurret(std::shared_ptr<Turret>, sf::Vector2f);
 	void shoot(std::shared_ptr<std::vector<bulletInfo>>);
 	void setHitboxPosition(sf::Vector2f position);
+	void createBodyprojection();
 
 	std::string getType();
 	void setName(std::string);

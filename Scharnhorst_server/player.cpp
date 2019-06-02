@@ -94,3 +94,9 @@ void Player::printPosition()
 {
 	std::cout << "Player " << this->playerName << " position " << this->getShip()->getPosition().x << ' ' <<  this->getShip()->getPosition().y << std::endl;
 }
+
+void Player::draw(sf::RenderWindow &window)
+{
+	this->playerShip->draw(window);
+
+}

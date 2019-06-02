@@ -21,6 +21,7 @@ public:
 	void sendPlayerPosition(sf::UdpSocket&, sf::IpAddress&, unsigned short&);
 	sf::Packet preparePOSpacket();
 	sf::Packet preparePLApacket();
+	void draw(sf::RenderWindow&);
 
 	std::shared_ptr<Ship>& getShip();
 	void setShip(Ship);

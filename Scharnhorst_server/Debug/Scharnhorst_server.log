@@ -1,5 +1,15 @@
-﻿  server.cpp
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(529): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(577): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
-c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(636): warning C4101: "point_count": lokalna zmienna, do której nie istnieje odwołanie
+﻿  ship.cpp
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(115): warning C4244: "-=": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(119): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(124): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(133): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(134): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(135): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(180): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(181): warning C4244: "argument": konwersja z "double" do "T", możliwa utrata danych
+          with
+          [
+              T=float
+          ]
+c:\users\maciej\documents\github\scharnhorst_server\scharnhorst_server\ship.cpp(202): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
   Scharnhorst_server.vcxproj -> C:\Users\Maciej\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

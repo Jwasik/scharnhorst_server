@@ -30,6 +30,8 @@ Ship::Ship()
 	testShape.setFillColor(sf::Color::Red);
 	testShape.setOrigin(sf::Vector2f(25,50));
 	this->shape = testShape;
+
+
 }
 
 Ship::Ship(std::string &name, float parameters[6], sf::ConvexShape shape)
@@ -37,8 +39,9 @@ Ship::Ship(std::string &name, float parameters[6], sf::ConvexShape shape)
 	this->shape = shape;
 	this->shape.move(shape.getOrigin());
 	auto temporaryOrigin = shape.getOrigin();
-	this->hitbox[0] = odcinek(sf::Vector2f(0,temporaryOrigin.y),sf::Vector2f(temporaryOrigin.x*2,temporaryOrigin.y));
-	this->hitbox[1] = odcinek(sf::Vector2f(temporaryOrigin.y,0),sf::Vector2f(temporaryOrigin.x,temporaryOrigin.y*2));
+	this->hitbox[0] = odcinek(sf::Vector2f(0,0),sf::Vector2f(0,0));
+	this->hitbox[1] = odcinek(sf::Vector2f(0,0),sf::Vector2f(0,0));
+	
 	this->shape.move(sf::Vector2f(128, 512));
 	this->shape.setFillColor(sf::Color(50, 50, 50));
 	this->deleteOrigin();
@@ -52,13 +55,20 @@ Ship::Ship(std::string &name, float parameters[6], sf::ConvexShape shape)
 	this->maxSpeed = parameters[4];
 	this->mass = parameters[5];
 	this->actualSpeed = 0;
-	this->acceleration = enginePower / mass;
+	this->acceleration = (enginePower / mass) * 20;
 
 	shipStaticPressure = acceleration / (maxSpeed*maxSpeed);
+
+	createBodyprojection();
+
+
+
+
 }
 
 Ship::Ship(const Ship &newShip)
 {
+	this->shape = newShip.shape;
 	this->hitbox[0] = newShip.hitbox[0];
 	this->hitbox[1] = newShip.hitbox[1];
 
@@ -81,6 +91,8 @@ Ship::Ship(const Ship &newShip)
 	{
 		this->turrets.push_back(std::make_shared<Turret>(*turret));
 	}
+
+
 }
 
 
@@ -194,10 +206,9 @@ void Ship::setTurrets(float &mouseAngle, double &dTime)
 void Ship::draw(sf::RenderWindow& window)
 {
 	this->physical::draw(window);
-	for (auto turret : turrets)
-	{
-		turret->draw(window);
-	}
+	
+	window.draw(hitbox[0].line);
+	window.draw(hitbox[1].line);
 }
 
 void Ship::shoot(std::shared_ptr<std::vector<bulletInfo>> bulletsGotFromTurret)
@@ -209,5 +220,51 @@ void Ship::shoot(std::shared_ptr<std::vector<bulletInfo>> bulletsGotFromTurret)
 	}
 }
 
+void Ship::createBodyprojection()
+{
+	int pointCount;
+	pointCount = shape.getPointCount();
+	for (int i = 0; i < pointCount; i++)
+	{
+		if (this->shape.getPoint(i).y < this->hitbox[0].punkt1.y)
+		{
+			this->hitbox[0].punkt1 = this->shape.getPoint(i);
+			continue;
+		}
+		if (this->shape.getPoint(i).x > this->hitbox[1].punkt1.x)
+		{
+			this->hitbox[1].punkt1 = this->shape.getPoint(i);
+			continue;
+		}
+		if (this->shape.getPoint(i).y > this->hitbox[0].punkt2.y)
+		{
+			this->hitbox[0].punkt2 = this->shape.getPoint(i);
+
+			continue;
+		}
+		if (this->shape.getPoint(i).x < this->hitbox[1].punkt2.x)
+		{
+			//std::cout << hitbox[1].punkt2.x << " " << hitbox[1].punkt2.y << std::endl;
+
+			this->hitbox[1].punkt2 = this->shape.getPoint(i);
+
+			continue;
+		}
+	}
+	/*std::cout << hitbox[0].punkt1.x << " " << hitbox[0].punkt1.y << std::endl;
+	std::cout << hitbox[0].punkt2.x << " " << hitbox[0].punkt2.y << std::endl;
+
+	std::cout << hitbox[1].punkt1.x << " " << hitbox[1].punkt1.y << std::endl;
+	std::cout << hitbox[1].punkt2.x << " " << hitbox[1].punkt2.y << std::endl << std::endl;*/
 
 
+
+	/*for (int i = 0; i < pointCount; i++)
+	{
+		std::cout << shape.getPoint(i).x << " " << shape.getPoint(i).y << std::endl;
+	}*/
+	this->shape.setFillColor(sf::Color(200, 0, 0));
+	hitbox[1].punkt2 = sf::Vector2f(-106, 43);
+
+
+}

@@ -3,7 +3,7 @@
 
 odcinek::odcinek(sf::Vector2f a, sf::Vector2f b) : punkt1(a), punkt2(b)
 {
-	std::cout << "o";
+
 	orgin = sf::Vector2f(0, 0);
 	oa.a = 0;
 	ob.a = 0;

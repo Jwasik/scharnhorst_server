@@ -133,11 +133,12 @@ void Server::receiveUdpMessages()
 					messagePacket >> cannonAngle;
 					auto player = this->getPlayerById(id);
 					if (player == nullptr)continue;
+					player->getShip()->setHitboxPosition(position);
+					player->getShip()->hitbox[0].rotate(angle - player->getShip()->shape.getRotation());
+					player->getShip()->hitbox[1].rotate(angle - player->getShip()->shape.getRotation());
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
-					player->getShip()->setHitboxPosition(position);
-					player->getShip()->hitbox[0].rotate(angle - player->getShip()->hitbox[0].oa.a);
-					player->getShip()->hitbox[1].rotate(angle - player->getShip()->hitbox[1].oa.a);
+					
 
 					player->setSightAngle(cannonAngle);
 				}
@@ -173,7 +174,7 @@ void Server::serverLoop()
 {
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML test");
 	sf::View view;
-	view.setSize(sf::Vector2f(10000, 10000));
+	view.setSize(sf::Vector2f(4000, 4000));
 	window.setView(view);
 	window.setActive();
 	sf::Clock delta;
@@ -203,17 +204,27 @@ void Server::serverLoop()
 	std::cout << "TCP working on " << IP << ':' << "8888" << std::endl;
 	std::cout << "UDP working on " << IP << ':' << this->inUdpSocket.getLocalPort() << std::endl;
 	
-	sf::ConvexShape pol;//test
-	pol.setPointCount(4);
-	pol.setPoint(0, sf::Vector2f(100, -100));
-	pol.setPoint(1, sf::Vector2f(100, 100));
-	pol.setPoint(2, sf::Vector2f(-100, 100));
-	pol.setPoint(3, sf::Vector2f(-100, -100));
-	
-	pol.setPosition(750, 750);
+
+	for (auto & player : players)
+	{
+		std::cout << player->getShip()->hitbox[0].punkt1.x << " " << player->getShip()->hitbox[0].punkt1.y << std::endl;
+		std::cout << player->getShip()->hitbox[0].punkt2.x << " " << player->getShip()->hitbox[0].punkt2.y << std::endl;
+
+		std::cout << player->getShip()->hitbox[1].punkt1.x << " " << player->getShip()->hitbox[1].punkt1.y << std::endl;
+		std::cout << player->getShip()->hitbox[1].punkt2.x << " " << player->getShip()->hitbox[1].punkt2.y << std::endl << std::endl;
+	}
 	//MAIN LOOP
 	while (1)
 	{
+		/*for (auto & player : players)
+		{
+			std::cout << player->getShip()->hitbox[0].punkt1.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[0].punkt1.y - player->getShip()->shape.getPosition().y << std::endl;
+			std::cout << player->getShip()->hitbox[0].punkt2.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[0].punkt2.y - player->getShip()->shape.getPosition().y << std::endl;
+
+			std::cout << player->getShip()->hitbox[1].punkt1.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[1].punkt1.y - player->getShip()->shape.getPosition().y << std::endl;
+			std::cout << player->getShip()->hitbox[1].punkt2.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[1].punkt2.y - player->getShip()->shape.getPosition().y << std::endl << std::endl;
+			break;
+		}*/
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -234,8 +245,9 @@ void Server::serverLoop()
 		for (auto & player : players)
 		{
 			//std::cout << player->getShip()->hitbox[0].punkt1.x << " " << player->getShip()->hitbox[0].punkt1.y << std::endl;
-			window.draw(player->getShip()->hitbox[0].line);
-			window.draw(player->getShip()->hitbox[1].line);
+			player->draw(window);
+			//window.draw(player->getShip()->hitbox[0].line);
+			//window.draw(player->getShip()->hitbox[1].line);
 
 		}
 		window.display();
