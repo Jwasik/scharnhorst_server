@@ -217,3 +217,25 @@ USA330
 USA330
 9 -21
 END_TURRET
+german double 37 turret
+10
+9 15
+7 15
+2 10
+2 2
+7 1
+9 0
+11 1
+16 2
+16 10
+11 15
+9 0
+120
+10
+10
+2
+GER37
+-4 2
+GER37
+4 2
+END_TURRET

@@ -331,132 +331,139 @@ void Server::serverLoop()
 
 void Server::joinClients(std::vector<std::shared_ptr<Client>> &clients)
 {
-	sf::TcpListener listener;
-	if (listener.listen(8888) != sf::Socket::Done)
+	while (endFlag == 0) 
 	{
-		std::cout << "something is blocking incoming connections" << std::endl;
-	}
-
-	while (endFlag == 0)
-	{
-		
-		std::cout << "waiting for incoming connections" << std::endl;
-		std::shared_ptr<Client> connectingClient = std::make_shared<Client>();
-		if (listener.accept((*connectingClient).getTcpSocket()) != sf::Socket::Done)
+		sf::TcpListener listener;
+		if (listener.listen(8888) != sf::Socket::Done)
 		{
-			std::cout << "client tried to join" << std::endl;
-			connectingClient = nullptr;
-		}
-		else
-		{
-			std::lock_guard<std::mutex> lock(this->TcpMutex);
-			std::cout << "client accepted" << std::endl;
-			sf::Clock connectionClock;
-			connectionClock.restart();
-			sf::Packet helloPacket;
-			helloPacket.clear();
-
-			unsigned short clientUdpPort;
-			std::string message;
-
-			while (connectionClock.getElapsedTime().asSeconds() < 2)
-			{
-				if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
-				{
-					helloPacket >> message;
-					if (message == "HI_")
-					{
-						std::cout << "received HI message" << std::endl;
-						helloPacket >> clientUdpPort;
-						connectingClient->setOutUdpPort(clientUdpPort);
-						std::cout << "new client connected with IP: " << connectingClient->getRemoteAddress() << ':' << clientUdpPort << std::endl;
-						break;
-					}
-				}
-			}
-			helloPacket.clear();
-
-			helloPacket.clear();
-			helloPacket << "HI_" << serverUdpPort;
-			std::cout << "sending HI_ : " << serverUdpPort << std::endl;
-			connectingClient->sendTcp(helloPacket);
-			sf::Socket::Status connectedInfo;
-			while (connectionClock.getElapsedTime().asSeconds() < 2)
-			{
-				
-				connectedInfo = connectingClient->receiveTcp(helloPacket);
-				if (connectedInfo == sf::Socket::Status::Done)
-				{
-
-					helloPacket >> message;
-					if (message == "PLA")
-					{
-						unsigned int newPlayerId;
-						std::string newPlayerName, playerShipModel, playerShipName;
-						helloPacket >> newPlayerId;
-						helloPacket >> newPlayerName;
-						helloPacket >> playerShipModel;//tutaj model
-						helloPacket >> playerShipName;
-						if (newPlayerId == 0)
-						{
-							newPlayerId = players.size() + 1;
-						}
-						std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
-						newPlayer->getShip()->setName(playerShipName);
-						newPlayer->setShip(findShip(playerShipModel));
-						helloPacket.clear();
-
-						helloPacket << "PLJ";
-						helloPacket << newPlayerId;
-						helloPacket << newPlayerName;
-						helloPacket << float(120);//pozycja statku x
-						helloPacket << float(120);//pozycja statku y
-						helloPacket << float(0);//obrót statku
-
-						std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
-						std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;
-						connectingClient->sendTcp(helloPacket);
-
-						helloPacket.clear();
-
-						{
-							std::lock_guard<std::mutex> lock(this->mutex);
-							players.push_back(newPlayer);
-						}
-
-						sf::Packet PLApacket;
-						PLApacket.clear();
-						PLApacket << "PLA";
-						PLApacket << newPlayerId;
-						PLApacket << newPlayerName;
-						PLApacket << playerShipModel;
-						PLApacket << playerShipName;
-
-						for (auto & client : clients)
-						{
-							client->sendTcp(PLApacket);
-						}
-						for (auto & player : players)
-						{
-							connectingClient->sendTcp(player->preparePLApacket());
-						}
-						connectingClient->setPlayerId(newPlayerId);
-
-						break;
-					}
-				}
-			}
-			connectingClient->setBlocking(false);
-
-			if (connectedInfo != sf::Socket::Status::Done)continue;
-			{
-				std::lock_guard<std::mutex> lock(this->mutex);
-				connectingClient->resetConnectionClock();
-				clients.push_back(connectingClient);
-			}
-
+			std::cout << "something is blocking incoming connections" << std::endl;
 		}
 
+		while (endFlag == 0)
+		{
+
+			std::cout << "waiting for incoming connections" << std::endl;
+			std::shared_ptr<Client> connectingClient = std::make_shared<Client>();
+			if (listener.accept((*connectingClient).getTcpSocket()) != sf::Socket::Done)
+			{
+				std::cout << "client tried to join" << std::endl;
+				connectingClient = nullptr;
+				break;
+			}
+			else
+			{
+				std::lock_guard<std::mutex> lock(this->TcpMutex);
+				std::cout << "client accepted" << std::endl;
+				sf::Clock connectionClock;
+				connectionClock.restart();
+				sf::Packet helloPacket;
+				helloPacket.clear();
+
+				unsigned short clientUdpPort;
+				std::string message;
+
+				//connectingClient->setBlocking(false);
+				while (connectionClock.getElapsedTime().asSeconds() < 10)
+				{
+					if (connectingClient->receiveTcp(helloPacket) == sf::Socket::Status::Done)
+					{
+						std::cout << "got packet" << std::endl;
+						helloPacket >> message;
+						if (message == "HI_")
+						{
+							std::cout << "received HI message" << std::endl;
+							helloPacket >> clientUdpPort;
+							connectingClient->setOutUdpPort(clientUdpPort);
+							std::cout << "new client connected with IP: " << connectingClient->getRemoteAddress() << ':' << clientUdpPort << std::endl;
+							break;
+						}
+					}
+				}
+				helloPacket.clear();
+
+				helloPacket.clear();
+				helloPacket << "HI_" << serverUdpPort;
+				std::cout << "sending HI_ : " << serverUdpPort << std::endl;
+				connectingClient->sendTcp(helloPacket);
+				sf::Socket::Status connectedInfo;
+				connectedInfo = sf::Socket::Status::Error;
+				while (connectionClock.getElapsedTime().asSeconds() < 10)
+				{
+
+					connectedInfo = connectingClient->receiveTcp(helloPacket);
+					if (connectedInfo == sf::Socket::Status::Done)
+					{
+
+						helloPacket >> message;
+						if (message == "PLA")
+						{
+							unsigned int newPlayerId;
+							std::string newPlayerName, playerShipModel, playerShipName;
+							helloPacket >> newPlayerId;
+							helloPacket >> newPlayerName;
+							helloPacket >> playerShipModel;//tutaj model
+							helloPacket >> playerShipName;
+							if (newPlayerId == 0)
+							{
+								newPlayerId = players.size() + 1;
+							}
+							std::shared_ptr<Player> newPlayer = std::make_shared<Player>(newPlayerId, newPlayerName);
+							newPlayer->getShip()->setName(playerShipName);
+							newPlayer->setShip(findShip(playerShipModel));
+							helloPacket.clear();
+
+							helloPacket << "PLJ";
+							helloPacket << newPlayerId;
+							helloPacket << newPlayerName;
+							helloPacket << float(120);//pozycja statku x
+							helloPacket << float(120);//pozycja statku y
+							helloPacket << float(0);//obrót statku
+
+							std::cout << "sending PLJ : " << newPlayerId << ' ' << newPlayerName << std::endl;
+							std::cout << "sending player position : " << 120 << ' ' << 120 << std::endl;
+							connectingClient->sendTcp(helloPacket);
+
+							helloPacket.clear();
+
+							{
+								std::lock_guard<std::mutex> lock(this->mutex);
+								players.push_back(newPlayer);
+							}
+
+							sf::Packet PLApacket;
+							PLApacket.clear();
+							PLApacket << "PLA";
+							PLApacket << newPlayerId;
+							PLApacket << newPlayerName;
+							PLApacket << playerShipModel;
+							PLApacket << playerShipName;
+
+							for (auto & client : clients)
+							{
+								client->sendTcp(PLApacket);
+							}
+							for (auto & player : players)
+							{
+								connectingClient->sendTcp(player->preparePLApacket());
+							}
+							connectingClient->setPlayerId(newPlayerId);
+
+							break;
+						}
+					}
+				}
+				connectingClient->setBlocking(false);
+
+				if (connectedInfo != sf::Socket::Status::Done)continue;
+				{
+					std::lock_guard<std::mutex> lock(this->mutex);
+					connectingClient->resetConnectionClock();
+					clients.push_back(connectingClient);
+				}
+
+			}
+
+		}
 	}
 }
 
