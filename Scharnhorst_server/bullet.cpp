@@ -59,11 +59,9 @@ std::string Bullet::getType()
 	return this->type;
 }
 
-Bullet::Bullet(std::string ntype, sf::ConvexShape nbody, float nspeed, float ndamage, float nangle, sf::Vector2f punkt) : type(ntype), speed(nspeed), damage(ndamage), angle(nangle)
+Bullet::Bullet(std::string type, sf::ConvexShape body, float speed, float damage, float angle, int caliber, sf::Vector2f punkt) : type(type), speed(speed), damage(damage), angle(angle), caliber(caliber)
 {
-
-
-	this->shape = nbody;
+	this->shape = body;
 	this->tracer.punkt2 = punkt;
 	this->shape.setRotation(angle);
 	this->shape.setPosition(tracer.punkt2);
@@ -71,14 +69,10 @@ Bullet::Bullet(std::string ntype, sf::ConvexShape nbody, float nspeed, float nda
 	this->movementVector = sf::Vector2f(10, 10);//dla testów
 }
 
-Bullet::Bullet(std::string name, sf::ConvexShape body, float speed, float damage)
+
+Bullet::Bullet(std::string type, sf::ConvexShape body, float speed, float damage, int caliber) : type(type), speed(speed), damage(damage), caliber(caliber)
 {
-
-
-	this->type = name;
 	this->shape = body;
-	this->speed = speed;
-	this->damage = damage;
 	this->calculateMovementVector();
 	this->movementVector = sf::Vector2f(10, 10);//dla testów
 }

@@ -186,7 +186,7 @@ Barrel::Barrel(std::string name, sf::Vector2f punkt) :name(name)
 	this->punkt = zamienNaPunktNaOkregu(punkt, sf::Vector2f(0, 0));
 }
 
-Barrel::Barrel(std::string name, sf::Vector2f punkt, sf::ConvexShape shape, Bullet mainBulletType, unsigned int barrelSize) : name(name), barrelSize(barrelSize)
+Barrel::Barrel(std::string name, sf::Vector2f punkt, sf::ConvexShape shape, Bullet mainBulletType, unsigned int barrelSize, float reloadTime) : name(name), barrelSize(barrelSize)
 {
 	this->mainBulletType = std::make_shared<Bullet>(mainBulletType);
 	this->shape = shape;

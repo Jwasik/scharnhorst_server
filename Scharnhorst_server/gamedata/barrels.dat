@@ -1,6 +1,7 @@
 test
 test
 75
+1.0
 6
 4 0
 12 0
@@ -12,6 +13,7 @@ END_BARREL
 GER280
 panzergranate 280
 280
+25
 14
 3 0
 5 0
@@ -30,20 +32,44 @@ panzergranate 280
 END_BARREL
 GER150
 panzergranate 150
-280
-14
-3 0
-5 0
-5 28
-6 29
-6 53
-7 54
-7 56
-3 56
-0 56
-0 54
-0 53
-0 29
-1 28
+150
+12
+4
 1 0
+4 0
+5 33
+0 33
+END_BARREL
+GER105
+panzergranate 105
+105
+9
+3
+1 0
+0 23
+3 23
+END_BARREL
+RUS180
+RUS180
+180
+18
+4
+2 0
+4 0
+6 54
+0 54
+END_BARREL
+USA330
+USA330
+330
+30
+8
+2 57
+0 57
+0 17
+1 1
+2 0
+3 1
+4 17
+4 57
 END_BARREL

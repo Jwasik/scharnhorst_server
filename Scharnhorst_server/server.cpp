@@ -488,13 +488,13 @@ sf::Packet Server::prepareHITpacket(std::shared_ptr<Player> &player, Bullet &bul
 
 bool Server::loadBullets()
 {
-	std::ifstream in("gamedata/bullets.dat");
+	std::fstream in("gamedata/bullets.dat");
 	if (!in.good())	return 0;
 
 	std::string name, endWord;
 	unsigned int pointCount;
 	float x, y;
-	float speed, damage;
+	float speed, damage, caliber;
 
 	while (true)
 	{
@@ -525,32 +525,38 @@ bool Server::loadBullets()
 		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		in >> damage;
 		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		in >> caliber;
+		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::getline(in, endWord);
 
 		if (endWord != "END_BULLET")break;
-		bulletData.push_back(std::pair<std::string, Bullet>(name, Bullet(name, bulletShape, speed, damage)));
+		bulletData.push_back(std::pair<std::string, Bullet>(name, Bullet(name, bulletShape, speed, damage, caliber)));
 	}
+	in.close();
 	return 1;
 }
 bool Server::loadBarrels()
 {
-	std::ifstream in("gamedata/barrels.dat");
+	std::fstream in("gamedata/barrels.dat");
 	if (!in.good())	return 0;
 
 	std::string name, mainBulletType, endWord;
-	unsigned int point_count, bulletSize;
+	unsigned int point_count, caliber;
 	while (!in.eof())
 	{
 		std::shared_ptr<Barrel> newBarrel;
 
 		unsigned int pointCount = 0;
 		float x, y;
+		float reloadTime;
 		sf::ConvexShape barrelShape;
 		barrelShape.setFillColor(sf::Color::Blue);
 
 		std::getline(in, name);//nazwa
 		std::getline(in, mainBulletType);//nazwa pocisku
-		in >> bulletSize;//kaliber
+		in >> caliber;//kaliber
+		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		in >> reloadTime;//kaliber
 		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		in >> pointCount;//iloœæ punktów
@@ -572,17 +578,18 @@ bool Server::loadBarrels()
 		}
 		barrelShape.setOrigin(sf::Vector2f(maxx / 2, 0));
 
+
 		std::getline(in, endWord);//2 razy bo musi przeskoczyæ do nastêpnej lini
 		if (endWord != "END_BARREL")return 0;
-
-		barrelData.push_back(std::pair<std::string, Barrel>(name, Barrel(name, sf::Vector2f(0, 0), barrelShape, findBullet(mainBulletType), bulletSize)));
+		barrelData.push_back(std::pair<std::string, Barrel>(name, Barrel(name, sf::Vector2f(0, 0), barrelShape, findBullet(mainBulletType), caliber, reloadTime)));
 		barrelData.back().second.length = maxy;
 	}
+	in.close();
 	return 1;
 }
 bool Server::loadTurrets()
 {
-	std::ifstream in("gamedata/turrets.dat");
+	std::fstream in("gamedata/turrets.dat");
 	if (!in.good())return 0;
 
 	std::string name, cannonType, endWord;
@@ -634,14 +641,16 @@ bool Server::loadTurrets()
 			in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
 		std::getline(in, endWord);
-		if (endWord != "END_TURRET")return 0;
+		if (endWord != "END_TURRET")break;
 		turretData.push_back(std::pair<std::string, Turret>(name, Turret(*newTurret)));
 	}
+	in.close();
 	return 1;
 }
 bool Server::loadShips()
 {
-	std::ifstream in("gamedata/ships.dat");
+	std::fstream in("gamedata/ships.dat");
+
 	if (!in.good())return 0;
 
 	std::string name, endWord;
@@ -696,6 +705,8 @@ bool Server::loadShips()
 
 		std::string turretName;
 		float turretRestrictedArea[2];
+		float startingAngle = 69;
+
 		for (unsigned int i = 0; i < turretCount; i++)
 		{
 			std::getline(in, turretName);
@@ -706,8 +717,11 @@ bool Server::loadShips()
 			in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			in >> turretRestrictedArea[1];
 			in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			in >> startingAngle;
+			in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			std::shared_ptr<Turret> newTurret = std::make_shared<Turret>(this->findTurret(turretName));
-			newTurret->setRestrictedArea(parameters);
+			newTurret->setRestrictedArea(turretRestrictedArea);
+			newTurret->setRotation(startingAngle);
 			newShip->addTurret(newTurret, sf::Vector2f(x, y));
 		}
 
@@ -715,6 +729,7 @@ bool Server::loadShips()
 		if (endWord != "END_SHIP")break;
 		shipData.push_back(std::pair<std::string, Ship>(name, Ship(*newShip)));
 	}
+	in.close();
 	return 1;
 }
 Bullet Server::findBullet(std::string name)

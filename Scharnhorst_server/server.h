@@ -1,10 +1,12 @@
 #pragma once
-#include "client.h"
-#include "player.h"
-#include "bullet.h"
-#include "turret.h"
 #include "includes.h"
+#include "player.h"
+#include "turret.h"
+#include "bullet.h"
+#include "ship.h"
+#include "client.h"
 #include <thread>
+#include <string>
 #include <fstream>
 #include <mutex>
 #include <atomic>

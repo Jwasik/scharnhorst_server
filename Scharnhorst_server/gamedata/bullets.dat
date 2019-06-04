@@ -6,8 +6,9 @@ panzergranate 280
 0 32
 0 16
 1 16
-900
+1200
 784
+280
 END_BULLET
 panzergranate 150
 5
@@ -17,6 +18,40 @@ panzergranate 150
 0 8
 1 4
 1 5
-123
+900
 456
+150
+END_BULLET
+panzergranate 105
+2
+0 0
+0 6
+0 3
+600
+90
+105
+END_BULLET
+RUS180
+5
+1 0
+2 4
+2 8
+0 8
+1 4
+1 5
+600
+324
+180
+END_BULLET
+USA330
+5
+1 0
+2 16
+2 32
+0 32
+0 16
+1 16
+900
+1089
+330
 END_BULLET

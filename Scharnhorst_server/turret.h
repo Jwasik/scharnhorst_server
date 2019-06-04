@@ -15,7 +15,7 @@ public:
 	punktNaOkregu punkt;
 	Barrel();
 	Barrel(std::string name, sf::Vector2f point);
-	Barrel(std::string name, sf::Vector2f point, sf::ConvexShape shape, Bullet, unsigned int);
+	Barrel(std::string name, sf::Vector2f point, sf::ConvexShape shape, Bullet, unsigned int, float);
 	void updatePosition(float TurretAngle, sf::Vector2f TurretOrigin);
 };
 
