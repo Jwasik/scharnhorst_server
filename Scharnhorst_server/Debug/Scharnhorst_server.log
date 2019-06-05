@@ -1,1 +1,6 @@
-﻿  Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe
+﻿  server.cpp
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(535): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(546): warning C4101: 'point_count': unreferenced local variable
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(598): warning C4101: 'point_count': unreferenced local variable
+c:\users\wanioch\documents\github\scharnhorst_server\scharnhorst_server\server.cpp(659): warning C4101: 'point_count': unreferenced local variable
+  Scharnhorst_server.vcxproj -> C:\Users\Wanioch\Documents\GitHub\scharnhorst_server\Debug\Scharnhorst_server.exe

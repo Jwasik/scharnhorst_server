@@ -138,8 +138,6 @@ void Server::receiveUdpMessages()
 					player->getShip()->hitbox[1].rotate(angle - player->getShip()->shape.getRotation());
 					player->getShip()->setPosition(position);
 					player->getShip()->setRotation(angle);
-					
-
 					player->setSightAngle(cannonAngle);
 				}
 				if (message == "PPS")
@@ -487,9 +485,6 @@ sf::Packet Server::prepareHITpacket(std::shared_ptr<Player> &player, Bullet &bul
 	hitPacket << order << player->getPlayerId();
 	hitPacket << bullet;
 	hitPacket<<player->getPlayerHP();
-	/*To potem wywaliæ*/
-	hitPacket << bullet.getPosition().x;
-	hitPacket << bullet.getPosition().y;
 	return hitPacket;
 }
 
