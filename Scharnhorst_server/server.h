@@ -29,6 +29,7 @@ private:
 	unsigned short serverUdpPort;
 	sf::IpAddress localIP = sf::IpAddress::getLocalAddress();
 
+	std::vector<std::shared_ptr<Ship>> wreckages;
 	std::vector<std::shared_ptr<Client>> clients;
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<Bullet> bullets;
@@ -62,7 +63,9 @@ public:
 	void serverLoop();
 	void joinClients(std::vector<std::shared_ptr<Client>> &clients);
 	void printPOSPacket(sf::Packet);
+
 	sf::Packet prepareHITpacket(std::shared_ptr<Player>&,Bullet&);
+	sf::Packet prepareKILpacket(unsigned int,unsigned int);
 	//void checkColission();
 	Server();
 	~Server();

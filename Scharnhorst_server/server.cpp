@@ -272,10 +272,16 @@ void Server::serverLoop()
 				}
 				if (playerShip->hitbox[0].intersects(it->tracer) || playerShip->hitbox[1].intersects(it->tracer))
 				{
-					std::cout <<it->ownerId << std::endl;
 					player->subtractHP(it->getDamage());
 					this->sendTcpToEveryone(this->prepareHITpacket(player,*it));
-					it=bullets.erase(it);	
+					
+					if (player->getPlayerHP() <= 0)
+					{
+						this->sendTcpToEveryone(this->prepareKILpacket(player->getPlayerId(), it->ownerId));
+						player->getShip()->setPosition(sf::Vector2f(-32000,-32000));
+					}
+
+					it = bullets.erase(it);
 					if (it == bullets.end())break;
 				}
 			}
@@ -486,6 +492,15 @@ sf::Packet Server::prepareHITpacket(std::shared_ptr<Player> &player, Bullet &bul
 	hitPacket << bullet;
 	hitPacket<<player->getPlayerHP();
 	return hitPacket;
+}
+
+sf::Packet Server::prepareKILpacket(unsigned int preyId, unsigned int predatorId)
+{
+	sf::Packet KILpacket;
+	KILpacket << "KIL";
+	KILpacket << preyId;
+	KILpacket << predatorId;
+	return KILpacket;
 }
 
 bool Server::loadBullets()

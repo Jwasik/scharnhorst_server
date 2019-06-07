@@ -21,6 +21,7 @@ public:
 
 	unsigned int ownerId;
 	unsigned int bulletId;
+
 	Bullet();
 	Bullet(const Bullet&);
 	Bullet(std::string type, sf::ConvexShape body, float speed, float damage, float angle, int caliber, sf::Vector2f punkt);
