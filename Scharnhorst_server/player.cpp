@@ -51,6 +51,11 @@ std::shared_ptr<Ship> & Player::getShip()
 	return this->playerShip;
 }
 
+void Player::respawn()
+{
+	this->HP = this->maxHP;
+}
+
 void Player::setShip(Ship newShip)
 {
 	*(this->playerShip) = newShip;

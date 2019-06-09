@@ -24,6 +24,8 @@ public:
 	void draw(sf::RenderWindow&);
 
 	std::shared_ptr<Ship>& getShip();
+
+	void respawn();
 	void setShip(Ship);
 	void setSightAngle(float);
 	void subtractHP(float);

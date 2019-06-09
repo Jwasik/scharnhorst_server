@@ -175,6 +175,8 @@ void Server::serverLoop()
 	view.setSize(sf::Vector2f(4000, 4000));
 	window.setView(view);
 	window.setActive();
+	window.setFramerateLimit(70);
+
 	sf::Clock delta;
 	delta.restart();
 	float deltaTime;
@@ -214,15 +216,6 @@ void Server::serverLoop()
 	//MAIN LOOP
 	while (1)
 	{
-		/*for (auto & player : players)
-		{
-			std::cout << player->getShip()->hitbox[0].punkt1.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[0].punkt1.y - player->getShip()->shape.getPosition().y << std::endl;
-			std::cout << player->getShip()->hitbox[0].punkt2.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[0].punkt2.y - player->getShip()->shape.getPosition().y << std::endl;
-
-			std::cout << player->getShip()->hitbox[1].punkt1.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[1].punkt1.y - player->getShip()->shape.getPosition().y << std::endl;
-			std::cout << player->getShip()->hitbox[1].punkt2.x - player->getShip()->shape.getPosition().x << " " << player->getShip()->hitbox[1].punkt2.y - player->getShip()->shape.getPosition().y << std::endl << std::endl;
-			break;
-		}*/
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -236,17 +229,11 @@ void Server::serverLoop()
 
 		for (auto & bullet : bullets)
 		{
-			//window.draw(pol);
 			bullet.draw(window);
-			//std::cout << bullet.tracer.punkt1.x << " " << bullet.tracer.punkt1.y << std::endl;
 		} 
 		for (auto & player : players)
 		{
-			//std::cout << player->getShip()->hitbox[0].punkt1.x << " " << player->getShip()->hitbox[0].punkt1.y << std::endl;
 			player->draw(window);
-			//window.draw(player->getShip()->hitbox[0].line);
-			//window.draw(player->getShip()->hitbox[1].line);
-
 		}
 		window.display();
 		window.clear();
@@ -279,6 +266,7 @@ void Server::serverLoop()
 					{
 						this->sendTcpToEveryone(this->prepareKILpacket(player->getPlayerId(), it->ownerId));
 						player->getShip()->setPosition(sf::Vector2f(-32000,-32000));
+						player->respawn();
 					}
 
 					it = bullets.erase(it);
